@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { useNavigate } from "react-router-dom";
 import PropertyCard from "../components/PropertyCard";
 import { supabase } from "../supabaseClient";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const [ads, setAds] = useState([]);
