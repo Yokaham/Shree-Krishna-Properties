@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import PropertyCard from "../components/PropertyCard";
+import Button from "../components/Button";
 import { supabase } from "../supabaseClient";
 
 export default function Home() {
@@ -17,6 +19,7 @@ export default function Home() {
       const { data, error } = await supabase
         .from("ads")
         .select("*")
+        .order("owner_listed", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(3);
 
@@ -178,13 +181,14 @@ export default function Home() {
           )}
 
           <div className="text-center mt-8 sm:mt-12">
-            <Link
-              to="/ads"
-              className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-2xl font-semibold hover:bg-blue-700 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md hover:shadow-lg"
+            <Button
+              variant="primary"
+              size="lg"
+              icon={<ArrowRight className="w-5 h-5" />}
+              onClick={() => navigate("/ads")}
             >
-              <span>View All Properties</span>
-              <span className="text-lg">→</span>
-            </Link>
+              View All Properties
+            </Button>
           </div>
         </div>
       </section>

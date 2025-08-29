@@ -1,4 +1,6 @@
 import React from 'react';
+import { Phone, MessageCircle } from 'lucide-react';
+import Button from './Button';
 
 function Footer() {
   return (
@@ -62,22 +64,22 @@ function Footer() {
                 href="tel:9463255555" 
                 className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors duration-200"
               >
-                <span>📱</span>
+                <Phone className="w-4 h-4" />
                 <span>+91 9463255555</span>
               </a>
               <div className="flex items-center gap-2 text-gray-300">
                 <span>📍</span>
                 <span>Chandigarh, Mohali, Panchkula</span>
               </div>
-              <a 
-                href="https://wa.me/919463255555" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-2xl font-semibold hover:bg-green-600 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md mt-4"
-              >
-                <span>💬</span>
-                <span>WhatsApp Us</span>
-              </a>
+              <div className="mt-4">
+                <Button
+                  variant="success"
+                  icon={<MessageCircle className="w-4 h-4" />}
+                  onClick={() => window.open("https://wa.me/919463255555", "_blank")}
+                >
+                  WhatsApp Us
+                </Button>
+              </div>
             </div>
           </div>
         </div>

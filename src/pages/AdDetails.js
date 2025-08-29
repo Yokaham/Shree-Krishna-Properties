@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { ArrowLeft, Phone, MessageCircle, Calendar, Hash } from "lucide-react";
 import Slider from "react-slick";
 import { supabase } from "../supabaseClient";
 import FeatureBadge from "../components/FeatureBadge";
+import Button from "../components/Button";
 
 export default function AdDetails() {
   const { id } = useParams();
@@ -82,12 +84,9 @@ export default function AdDetails() {
           </div>
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">Error Loading Property</h2>
           <p className="text-red-600 mb-4 text-center">{error}</p>
-          <button
-            onClick={() => navigate("/ads")}
-            className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-700 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md"
-          >
+          <Button variant="primary" onClick={() => navigate("/ads")}>
             Back to Properties
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -102,12 +101,9 @@ export default function AdDetails() {
           </div>
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">Property Not Found</h2>
           <p className="text-gray-600 mb-4">The property you're looking for doesn't exist.</p>
-          <button
-            onClick={() => navigate("/ads")}
-            className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-blue-700 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md"
-          >
+          <Button variant="primary" onClick={() => navigate("/ads")}>
             Back to Properties
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -121,37 +117,38 @@ export default function AdDetails() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Back Button */}
-        <button
+        <Button
+          variant="outline"
+          icon={<ArrowLeft className="w-4 h-4" />}
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6 font-semibold transition-all duration-200 ease-in-out bg-white px-4 py-2 rounded-2xl shadow-sm hover:shadow-md transform hover:scale-105"
+          className="mb-6"
         >
-          <span className="text-lg">←</span>
-          <span>Back</span>
-        </button>
+          Back
+        </Button>
 
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
           {/* Image Gallery - Compact Size */}
-          <div className="relative">
+          <div className="relative h-64 sm:h-80 md:h-72">
             {images.length === 1 ? (
               <img
                 src={images[0]}
                 alt={ad.title}
-                className="w-full h-64 sm:h-80 md:h-72 object-cover"
+                className="w-full h-full object-cover"
+                loading="lazy"
               />
             ) : (
-              <div className="h-64 sm:h-80 md:h-72">
-                <Slider {...gallerySettings}>
-                  {images.map((img, index) => (
-                    <div key={index}>
-                      <img
-                        src={img}
-                        alt={`${ad.title} ${index + 1}`}
-                        className="w-full h-64 sm:h-80 md:h-72 object-cover"
-                      />
-                    </div>
-                  ))}
-                </Slider>
-              </div>
+              <Slider {...gallerySettings}>
+                {images.map((img, index) => (
+                  <div key={index}>
+                    <img
+                      src={img}
+                      alt={`${ad.title} ${index + 1}`}
+                      className="w-full h-64 sm:h-80 md:h-72 object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </Slider>
             )}
             
             {/* Image Count Badge */}
@@ -205,9 +202,11 @@ export default function AdDetails() {
             {/* Property Info */}
             <div className="bg-blue-50 rounded-2xl p-4 sm:p-6 mb-6 sm:mb-8">
               <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Property Information</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="flex items-center gap-3">
-                  <span className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center text-lg">📅</span>
+                  <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-blue-600" />
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Listed On</p>
                     <p className="font-medium text-gray-800">
@@ -220,12 +219,25 @@ export default function AdDetails() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center text-lg">🆔</span>
+                  <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
+                    <Hash className="w-5 h-5 text-blue-600" />
+                  </div>
                   <div>
                     <p className="text-sm text-gray-600">Property ID</p>
                     <p className="font-medium text-gray-800">SKP-{ad.id}</p>
                   </div>
                 </div>
+                {ad.property_type && (
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
+                      <span className="text-lg">🏠</span>
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-600">Property Type</p>
+                      <p className="font-medium text-gray-800 capitalize">{ad.property_type}</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -236,24 +248,22 @@ export default function AdDetails() {
                 Contact our expert team for more details, site visits, and personalized assistance.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <a
-                  href="tel:9463255555"
-                  className="flex items-center justify-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-2xl font-semibold hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md"
+                <Button
+                  variant="secondary"
+                  icon={<Phone className="w-5 h-5" />}
+                  onClick={() => window.open("tel:9463255555")}
                 >
-                  <span className="text-lg">📞</span>
-                  <span>Call Now</span>
-                </a>
-                <a
-                  href={`https://wa.me/919463255555?text=${encodeURIComponent(
+                  Call Now
+                </Button>
+                <Button
+                  variant="success"
+                  icon={<MessageCircle className="w-5 h-5" />}
+                  onClick={() => window.open(`https://wa.me/919463255555?text=${encodeURIComponent(
                     `Hi! I'm interested in the property: ${ad.title} (ID: SKP-${ad.id}). Could you provide more details?`
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 bg-green-500 text-white px-6 py-3 rounded-2xl font-semibold hover:bg-green-600 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md"
+                  )}`, "_blank")}
                 >
-                  <span className="text-lg">💬</span>
-                  <span>WhatsApp</span>
-                </a>
+                  WhatsApp
+                </Button>
               </div>
             </div>
           </div>

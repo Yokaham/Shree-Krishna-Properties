@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Phone } from 'lucide-react';
+import Button from './Button';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,7 +24,7 @@ function Navbar() {
             <li>
               <Link 
                 to="/" 
-                className={`text-white font-medium px-4 py-2 rounded-xl transition-all duration-200 ease-in-out hover:bg-white hover:bg-opacity-20 ${
+                className={`text-white font-medium px-4 py-2 rounded-2xl transition-all duration-200 ease-in-out hover:bg-white hover:bg-opacity-20 ${
                   location.pathname === '/' ? 'bg-white bg-opacity-20' : ''
                 }`}
               >
@@ -32,7 +34,7 @@ function Navbar() {
             <li>
               <Link 
                 to="/ads" 
-                className={`text-white font-medium px-4 py-2 rounded-xl transition-all duration-200 ease-in-out hover:bg-white hover:bg-opacity-20 ${
+                className={`text-white font-medium px-4 py-2 rounded-2xl transition-all duration-200 ease-in-out hover:bg-white hover:bg-opacity-20 ${
                   location.pathname === '/ads' ? 'bg-white bg-opacity-20' : ''
                 }`}
               >
@@ -40,24 +42,26 @@ function Navbar() {
               </Link>
             </li>
             <li>
-              <a 
-                href="tel:9463255555" 
-                className="bg-white text-blue-600 px-6 py-2 rounded-2xl font-semibold hover:bg-gray-50 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md"
+              <Button
+                variant="secondary"
+                icon={<Phone className="w-4 h-4" />}
+                onClick={() => window.open("tel:9463255555")}
+                className="bg-white text-blue-600 hover:bg-gray-50"
               >
-                📞 9463255555
-              </a>
+                9463255555
+              </Button>
             </li>
           </ul>
 
           {/* Mobile Hamburger */}
-          <button 
-            className="md:hidden flex flex-col gap-1 p-2"
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden text-white"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <div className={`w-6 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></div>
-            <div className={`w-6 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`}></div>
-            <div className={`w-6 h-0.5 bg-white transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></div>
-          </button>
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </Button>
         </div>
 
         {/* Mobile Menu */}
@@ -65,7 +69,7 @@ function Navbar() {
           <div className="py-4 space-y-2">
             <Link 
               to="/" 
-              className={`block text-white font-medium px-4 py-3 rounded-xl transition-all duration-200 ease-in-out hover:bg-white hover:bg-opacity-20 ${
+              className={`block text-white font-medium px-4 py-3 rounded-2xl transition-all duration-200 ease-in-out hover:bg-white hover:bg-opacity-20 ${
                 location.pathname === '/' ? 'bg-white bg-opacity-20' : ''
               }`}
               onClick={() => setIsMenuOpen(false)}
@@ -74,20 +78,24 @@ function Navbar() {
             </Link>
             <Link 
               to="/ads" 
-              className={`block text-white font-medium px-4 py-3 rounded-xl transition-all duration-200 ease-in-out hover:bg-white hover:bg-opacity-20 ${
+              className={`block text-white font-medium px-4 py-3 rounded-2xl transition-all duration-200 ease-in-out hover:bg-white hover:bg-opacity-20 ${
                 location.pathname === '/ads' ? 'bg-white bg-opacity-20' : ''
               }`}
               onClick={() => setIsMenuOpen(false)}
             >
               Properties
             </Link>
-            <a 
-              href="tel:9463255555" 
-              className="block bg-white text-blue-600 px-4 py-3 rounded-2xl font-semibold hover:bg-gray-50 transition-all duration-200 ease-in-out text-center mx-4 mt-4"
+            <div className="mx-4 mt-4">
+              <Button
+                variant="secondary"
+                icon={<Phone className="w-4 h-4" />}
+                onClick={() => window.open("tel:9463255555")}
+                className="w-full bg-white text-blue-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
-            >
-              📞 9463255555
-            </a>
+              >
+                9463255555
+              </Button>
+            </div>
           </div>
         </div>
       </div>
