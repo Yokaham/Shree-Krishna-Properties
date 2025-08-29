@@ -1,192 +1,90 @@
 import React from 'react';
 
 function Footer() {
-  const footerStyle = {
-    background: 'linear-gradient(135deg, #374151 0%, #1f2937 100%)',
-    color: 'white',
-    marginTop: '60px',
-  };
-
-  const containerStyle = {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '60px 20px 30px',
-  };
-
-  const gridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '40px',
-    marginBottom: '40px',
-  };
-
-  const sectionStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-  };
-
-  const titleStyle = {
-    fontSize: '1.25rem',
-    fontWeight: '600',
-    marginBottom: '8px',
-    color: '#dbeafe',
-  };
-
-  const linkStyle = {
-    color: '#d1d5db',
-    textDecoration: 'none',
-    transition: 'color 0.3s ease',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-  };
-
-  const bottomStyle = {
-    borderTop: '1px solid #4b5563',
-    paddingTop: '30px',
-    textAlign: 'center',
-    color: '#9ca3af',
-  };
-
-  const logoStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    marginBottom: '16px',
-  };
-
-  const iconBoxStyle = {
-    width: '50px',
-    height: '50px',
-    backgroundColor: '#2563eb',
-    borderRadius: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: '1.2rem',
-  };
-
   return (
-    <footer style={footerStyle}>
-      <div style={containerStyle}>
-        <div style={gridStyle}>
+    <footer className="bg-gradient-to-r from-gray-800 to-gray-700 text-white mt-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
-          <div style={sectionStyle}>
-            <div style={logoStyle}>
-              <div style={iconBoxStyle}>SK</div>
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg">
+                SK
+              </div>
               <div>
-                <h3 style={{color: 'white', margin: 0}}>Shree Krishna Properties</h3>
-                <p style={{color: '#9ca3af', margin: 0, fontSize: '0.9rem'}}>Your Trusted Property Partner</p>
+                <h3 className="text-white font-bold text-lg">Shree Krishna Properties</h3>
+                <p className="text-gray-300 text-sm">Your Trusted Property Partner</p>
               </div>
             </div>
-            <p style={{color: '#d1d5db', lineHeight: '1.6'}}>
+            <p className="text-gray-300 leading-relaxed mb-6 max-w-md">
               Specializing in premium properties across Chandigarh, Mohali, and Panchkula. 
               We help you find your dream property with professional guidance and expertise.
             </p>
           </div>
 
           {/* Quick Links */}
-          <div style={sectionStyle}>
-            <h4 style={titleStyle}>Quick Links</h4>
-            <a 
-              href="/" 
-              style={linkStyle}
-              onMouseEnter={(e) => e.target.style.color = '#dbeafe'}
-              onMouseLeave={(e) => e.target.style.color = '#d1d5db'}
-            >
-              🏠 Home
-            </a>
-            <a 
-              href="/ads" 
-              style={linkStyle}
-              onMouseEnter={(e) => e.target.style.color = '#dbeafe'}
-              onMouseLeave={(e) => e.target.style.color = '#d1d5db'}
-            >
-              🏢 All Properties
-            </a>
-            <a 
-              href="tel:9463255555" 
-              style={linkStyle}
-              onMouseEnter={(e) => e.target.style.color = '#dbeafe'}
-              onMouseLeave={(e) => e.target.style.color = '#d1d5db'}
-            >
-              📞 Contact Us
-            </a>
+          <div>
+            <h4 className="text-white font-semibold mb-4">Quick Links</h4>
+            <div className="space-y-3">
+              <a 
+                href="/" 
+                className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors duration-200"
+              >
+                <span>🏠</span>
+                <span>Home</span>
+              </a>
+              <a 
+                href="/ads" 
+                className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors duration-200"
+              >
+                <span>🏢</span>
+                <span>All Properties</span>
+              </a>
+              <a 
+                href="tel:9463255555" 
+                className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors duration-200"
+              >
+                <span>📞</span>
+                <span>Contact Us</span>
+              </a>
+            </div>
           </div>
 
           {/* Contact Info */}
-          <div style={sectionStyle}>
-            <h4 style={titleStyle}>Contact Information</h4>
-            <div style={{...linkStyle, cursor: 'default'}}>
-              <span>👤</span>
-              <span>Hargobind Aggarwal</span>
-            </div>
-            <a 
-              href="tel:9463255555" 
-              style={linkStyle}
-              onMouseEnter={(e) => e.target.style.color = '#dbeafe'}
-              onMouseLeave={(e) => e.target.style.color = '#d1d5db'}
-            >
-              📱 +91 9463255555
-            </a>
-            <div style={{...linkStyle, cursor: 'default'}}>
-              <span>📍</span>
-              <span>Chandigarh, Mohali, Panchkula</span>
-            </div>
-            <a 
-              href="https://wa.me/919463255555" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{
-                ...linkStyle,
-                backgroundColor: '#25D366',
-                padding: '10px 16px',
-                borderRadius: '8px',
-                marginTop: '8px',
-                justifyContent: 'center',
-                fontWeight: '500',
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.backgroundColor = '#128C7E';
-                e.target.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.backgroundColor = '#25D366';
-                e.target.style.transform = 'translateY(0)';
-              }}
-            >
-              💬 WhatsApp Us
-            </a>
-          </div>
-
-          {/* Services */}
-          <div style={sectionStyle}>
-            <h4 style={titleStyle}>Our Services</h4>
-            <div style={{...linkStyle, cursor: 'default'}}>
-              <span>🏘️</span>
-              <span>Residential Properties</span>
-            </div>
-            <div style={{...linkStyle, cursor: 'default'}}>
-              <span>🏢</span>
-              <span>Commercial Spaces</span>
-            </div>
-            <div style={{...linkStyle, cursor: 'default'}}>
-              <span>🏗️</span>
-              <span>Plot & Land Deals</span>
-            </div>
-            <div style={{...linkStyle, cursor: 'default'}}>
-              <span>💼</span>
-              <span>Investment Consultation</span>
+          <div>
+            <h4 className="text-white font-semibold mb-4">Contact Information</h4>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-gray-300">
+                <span>👤</span>
+                <span>Hargobind Aggarwal</span>
+              </div>
+              <a 
+                href="tel:9463255555" 
+                className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors duration-200"
+              >
+                <span>📱</span>
+                <span>+91 9463255555</span>
+              </a>
+              <div className="flex items-center gap-2 text-gray-300">
+                <span>📍</span>
+                <span>Chandigarh, Mohali, Panchkula</span>
+              </div>
+              <a 
+                href="https://wa.me/919463255555" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-2xl font-semibold hover:bg-green-600 transition-all duration-200 ease-in-out transform hover:scale-105 shadow-md mt-4"
+              >
+                <span>💬</span>
+                <span>WhatsApp Us</span>
+              </a>
             </div>
           </div>
         </div>
 
-        <div style={bottomStyle}>
-          <p>© {new Date().getFullYear()} Shree Krishna Properties. All rights reserved.</p>
-          <p style={{marginTop: '8px', fontSize: '0.9rem'}}>
+        <div className="border-t border-gray-600 pt-8 text-center">
+          <p className="text-gray-300">© {new Date().getFullYear()} Shree Krishna Properties. All rights reserved.</p>
+          <p className="text-gray-400 text-sm mt-2">
             Designed with ❤️ for premium property solutions
           </p>
         </div>
