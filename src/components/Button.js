@@ -43,6 +43,7 @@ const Button = ({
       {...props}
     >
       {icon && <span className="mr-2">{icon}</span>}
+      }
       {children}
     </motion.button>
   );
