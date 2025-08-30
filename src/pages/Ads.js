@@ -1,376 +1,532 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
-import PropertyCard from "../components/PropertyCard";
-import Button from "../components/Button";
-import useAds from "../hooks/useAds";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-// Debounce hook
-function useDebounce(value, delay) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+function Ads() {
+  const [search, setSearch] = useState("");
+  const [locationFilter, setLocationFilter] = useState("all");
+  const [priceFilter, setPriceFilter] = useState("all");
+  const [ads, setAds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState("grid");
 
+  // Fetch ads from Google Sheets
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
+    const fetchAds = async () => {
+      try {
+        const sheetId = "154qLJA3oGBMHXjfiQfD6sOOExpZ6onoWP5HPTDvNfxg";
+        const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-    return () => {
-      clearTimeout(handler);
+        const response = await fetch(url);
+        const text = await response.text();
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+
+        const rows = json.table.rows.map((row) => ({
+          id: row.c[0]?.v,
+          title: row.c[1]?.v,
+          price: row.c[2]?.v,
+          location: row.c[3]?.v,
+          description: row.c[4]?.v,
+          image: row.c[5]?.v,
+          date: row.c[6]?.v,
+        }));
+
+        setAds(rows.filter(ad => ad.id && ad.title));
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch ads:", err);
+        setLoading(false);
+      }
     };
-  }, [value, delay]);
 
-  return debouncedValue;
-}
+    fetchAds();
+  }, []);
 
-export default function Ads() {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  
-  // Filter states
-  const [filters, setFilters] = useState({
-    sectors: [],
-    propertyTypes: [],
-    ownerListed: undefined,
-    priceMin: null,
-    priceMax: null,
-    sizeMin: null,
-    sizeMax: null,
-    roadType: '',
-    tags: [],
-    sortBy: 'relevance'
+  // Filter ads
+  const filteredAds = ads.filter((ad) => {
+    const matchesSearch = ad.title.toLowerCase().includes(search.toLowerCase()) ||
+                         ad.location.toLowerCase().includes(search.toLowerCase());
+    const matchesLocation = locationFilter === "all" || 
+                           ad.location.toLowerCase().includes(locationFilter.toLowerCase());
+    
+    let matchesPrice = true;
+    if (priceFilter !== "all") {
+      const priceValue = parseFloat(ad.price.replace(/[^\d.]/g, ''));
+      switch (priceFilter) {
+        case "under-50":
+          matchesPrice = priceValue < 50;
+          break;
+        case "50-100":
+          matchesPrice = priceValue >= 50 && priceValue <= 100;
+          break;
+        case "100-200":
+          matchesPrice = priceValue >= 100 && priceValue <= 200;
+          break;
+        case "above-200":
+          matchesPrice = priceValue > 200;
+          break;
+        default:
+          matchesPrice = true;
+      }
+    }
+    
+    return matchesSearch && matchesLocation && matchesPrice;
   });
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
-  const { ads, loading, error, total, hasMore } = useAds(filters, debouncedSearchQuery, currentPage, 12);
-
-  // Available filter options
-  const sectorOptions = ["Sector 1", "Sector 7", "Sector 21", "Sector 34", "Sector 47", "IT City", "Zirakpur"];
-  const propertyTypeOptions = ["plot", "kothi", "flat", "land"];
-  const roadTypeOptions = ["B-Road", "Main Road", "Internal Road"];
-  const tagOptions = ["Ready to Move In", "Prime Location", "Park Facing", "Corner Property", "Near Market", "Near School"];
-
-  const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-    setCurrentPage(1); // Reset to first page when filters change
+  const containerStyle = {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '40px 20px',
   };
 
-  const handleMultiSelectChange = (key, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: prev[key].includes(value) 
-        ? prev[key].filter(item => item !== value)
-        : [...prev[key], value]
-    }));
-    setCurrentPage(1);
+  const headerStyle = {
+    background: 'linear-gradient(135deg, #1e40af 0%, #2563eb 100%)',
+    color: 'white',
+    padding: '60px 0',
+    marginBottom: '40px',
   };
 
-  const clearFilters = () => {
-    setFilters({
-      sectors: [],
-      propertyTypes: [],
-      ownerListed: undefined,
-      priceMin: null,
-      priceMax: null,
-      sizeMin: null,
-      sizeMax: null,
-      roadType: '',
-      tags: [],
-      sortBy: 'relevance'
-    });
-    setSearchQuery("");
-    setCurrentPage(1);
+  const filterSectionStyle = {
+    backgroundColor: 'white',
+    padding: '30px',
+    borderRadius: '16px',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    marginBottom: '40px',
   };
 
-  const activeFiltersCount = useMemo(() => {
-    let count = 0;
-    if (filters.sectors.length > 0) count++;
-    if (filters.propertyTypes.length > 0) count++;
-    if (filters.ownerListed !== undefined) count++;
-    if (filters.priceMin !== null || filters.priceMax !== null) count++;
-    if (filters.sizeMin !== null || filters.sizeMax !== null) count++;
-    if (filters.roadType) count++;
-    if (filters.tags.length > 0) count++;
-    return count;
-  }, [filters]);
+  const cardStyle = {
+    backgroundColor: 'white',
+    borderRadius: '16px',
+    overflow: 'hidden',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    height: '100%',
+    display: 'flex',
+    flexDirection: viewMode === 'list' ? 'row' : 'column',
+  };
 
-  if (error) {
+  const listCardStyle = {
+    ...cardStyle,
+    flexDirection: 'row',
+    alignItems: 'center',
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-3xl sm:text-4xl">❌</span>
-          </div>
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">Error Loading Properties</h2>
-          <p className="text-red-600 mb-4">{error}</p>
-          <Button variant="primary" onClick={() => window.location.reload()}>
-            Try Again
-          </Button>
-        </div>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '60vh',
+        flexDirection: 'column',
+        gap: '20px',
+      }}>
+        <div style={{
+          width: '50px',
+          height: '50px',
+          border: '4px solid #e5e7eb',
+          borderTop: '4px solid #2563eb',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+        }}></div>
+        <p style={{ color: '#6b7280', fontSize: '1.1rem' }}>Loading properties...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">All Properties</h1>
-          <p className="text-gray-600 text-base sm:text-lg">
-            Explore our complete collection of premium properties
-          </p>
-          <div className="w-20 sm:w-24 h-1 bg-gradient-to-r from-blue-600 to-blue-700 mx-auto mt-4 rounded-full"></div>
-        </div>
-
-        {/* Search and Filters */}
-        <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 mb-8">
-          {/* Search Bar */}
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search properties by title, location, or description..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-
-          {/* Filter Toggle */}
-          <div className="flex items-center justify-between">
-            <Button
-              variant="outline"
-              icon={<Filter className="w-4 h-4" />}
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              Filters {activeFiltersCount > 0 && `(${activeFiltersCount})`}
-              {showFilters ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
-            </Button>
-            
-            {activeFiltersCount > 0 && (
-              <Button variant="ghost" size="sm" onClick={clearFilters}>
-                Clear All
-              </Button>
-            )}
-          </div>
-
-          {/* Filters Panel */}
-          {showFilters && (
-            <div className="mt-6 pt-6 border-t border-gray-200">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {/* Sector Filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Sector</label>
-                  <div className="space-y-2 max-h-32 overflow-y-auto">
-                    {sectorOptions.map(sector => (
-                      <label key={sector} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={filters.sectors.includes(sector)}
-                          onChange={() => handleMultiSelectChange('sectors', sector)}
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">{sector}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Property Type Filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Property Type</label>
-                  <div className="space-y-2">
-                    {propertyTypeOptions.map(type => (
-                      <label key={type} className="flex items-center">
-                        <input
-                          type="checkbox"
-                          checked={filters.propertyTypes.includes(type)}
-                          onChange={() => handleMultiSelectChange('propertyTypes', type)}
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700 capitalize">{type}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Owner Listed Filter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Listing Type</label>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={filters.ownerListed === true}
-                      onChange={(e) => handleFilterChange('ownerListed', e.target.checked ? true : undefined)}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">Owner Listed Only</span>
-                  </label>
-                </div>
-
-                {/* Price Range */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Price Range (₹)</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      value={filters.priceMin || ''}
-                      onChange={(e) => handleFilterChange('priceMin', e.target.value ? parseInt(e.target.value) : null)}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      value={filters.priceMax || ''}
-                      onChange={(e) => handleFilterChange('priceMax', e.target.value ? parseInt(e.target.value) : null)}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-
-                {/* Size Range */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Size (Marla/Units)</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      value={filters.sizeMin || ''}
-                      onChange={(e) => handleFilterChange('sizeMin', e.target.value ? parseInt(e.target.value) : null)}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      value={filters.sizeMax || ''}
-                      onChange={(e) => handleFilterChange('sizeMax', e.target.value ? parseInt(e.target.value) : null)}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-
-                {/* Sort Options */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
-                  <select
-                    value={filters.sortBy}
-                    onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="relevance">Relevance</option>
-                    <option value="price_low">Price: Low to High</option>
-                    <option value="price_high">Price: High to Low</option>
-                    <option value="newest">Newest First</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Tags Filter */}
-              <div className="mt-6">
-                <label className="block text-sm font-medium text-gray-700 mb-3">Property Tags</label>
-                <div className="flex flex-wrap gap-2">
-                  {tagOptions.map(tag => (
-                    <button
-                      key={tag}
-                      onClick={() => handleMultiSelectChange('tags', tag)}
-                      className={`px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                        filters.tags.includes(tag)
-                          ? 'bg-blue-600 text-white shadow-md'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Results Summary */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-600">
-            {loading ? 'Loading...' : `${total} ${total === 1 ? 'property' : 'properties'} found`}
-          </p>
-          {debouncedSearchQuery && (
-            <p className="text-sm text-gray-500">
-              Search results for "{debouncedSearchQuery}"
-            </p>
-          )}
-        </div>
-
-        {/* Loading State */}
-        {loading && currentPage === 1 && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
-        )}
-
-        {/* Properties Grid */}
-        {!loading && ads.length > 0 && (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {ads.map((ad) => (
-                <PropertyCard
-                  key={ad.id}
-                  ad={ad}
-                  onClick={() => navigate(`/ads/${ad.id}`)}
-                  showFullDetails={true}
-                />
-              ))}
-            </div>
-            
-            {/* Pagination */}
-            {hasMore && (
-              <div className="text-center mt-8 sm:mt-12">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => setCurrentPage(prev => prev + 1)}
-                  disabled={loading}
-                >
-                  {loading ? 'Loading...' : 'Load More Properties'}
-                </Button>
-              </div>
-            )}
-
-            {/* Results Count */}
-            <div className="text-center mt-8 p-6 bg-white rounded-2xl shadow-sm">
-              <p className="text-gray-600">
-                Showing <span className="font-semibold text-blue-600">{ads.length}</span> of{' '}
-                <span className="font-semibold text-blue-600">{total}</span> {total === 1 ? 'property' : 'properties'}
+    <div>
+      {/* Header Section */}
+      <section style={headerStyle}>
+        <div style={containerStyle}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '20px',
+          }}>
+            <div>
+              <h1 style={{
+                fontSize: '3rem',
+                fontWeight: '700',
+                marginBottom: '12px',
+              }}>
+                All Properties
+              </h1>
+              <p style={{
+                fontSize: '1.2rem',
+                opacity: 0.9,
+              }}>
+                Discover {ads.length} premium properties across Chandigarh, Mohali & Panchkula
               </p>
             </div>
-          </>
-        )}
+            <Link
+              to="/"
+              className="btn"
+              style={{
+                backgroundColor: 'white',
+                color: '#2563eb',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                fontWeight: '600',
+                transition: 'all 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 8px 15px rgba(0, 0, 0, 0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = 'none';
+              }}
+            >
+              ← Back to Home
+            </Link>
+          </div>
+        </div>
+      </section>
 
-        {/* No Results */}
-        {!loading && ads.length === 0 && (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <span className="text-4xl sm:text-6xl">🏠</span>
+      <div style={containerStyle}>
+        {/* Filter Section */}
+        <div style={filterSectionStyle}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '20px',
+            marginBottom: '20px',
+          }}>
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: '600',
+                color: '#374151',
+              }}>
+                🔍 Search Properties
+              </label>
+              <input
+                type="text"
+                placeholder="Search by title or location..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  transition: 'border-color 0.3s ease',
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#2563eb'}
+                onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
+              />
             </div>
-            <h3 className="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
-              {debouncedSearchQuery || activeFiltersCount > 0 ? 'No Properties Found' : 'No Properties Available'}
-            </h3>
-            <p className="text-gray-500 text-base sm:text-lg mb-8">
-              {debouncedSearchQuery || activeFiltersCount > 0 
-                ? 'Try adjusting your search or filters to find more properties.'
-                : 'We\'re currently updating our listings. Please check back soon!'
-              }
+
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: '600',
+                color: '#374151',
+              }}>
+                📍 Location
+              </label>
+              <select
+                value={locationFilter}
+                onChange={(e) => setLocationFilter(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  backgroundColor: 'white',
+                }}
+              >
+                <option value="all">All Locations</option>
+                <option value="chandigarh">Chandigarh</option>
+                <option value="mohali">Mohali</option>
+                <option value="panchkula">Panchkula</option>
+                <option value="sector">Sector Areas</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={{
+                display: 'block',
+                marginBottom: '8px',
+                fontWeight: '600',
+                color: '#374151',
+              }}>
+                💰 Price Range (Lakhs)
+              </label>
+              <select
+                value={priceFilter}
+                onChange={(e) => setPriceFilter(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  backgroundColor: 'white',
+                }}
+              >
+                <option value="all">All Prices</option>
+                <option value="under-50">Under ₹50L</option>
+                <option value="50-100">₹50L - ₹1Cr</option>
+                <option value="100-200">₹1Cr - ₹2Cr</option>
+                <option value="above-200">Above ₹2Cr</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingTop: '20px',
+            borderTop: '1px solid #e5e7eb',
+          }}>
+            <p style={{
+              color: '#6b7280',
+              margin: 0,
+            }}>
+              Showing {filteredAds.length} of {ads.length} properties
             </p>
-            {(debouncedSearchQuery || activeFiltersCount > 0) && (
-              <Button variant="outline" onClick={clearFilters}>
-                Clear Search & Filters
-              </Button>
-            )}
+            
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                onClick={() => setViewMode('grid')}
+                style={{
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '6px',
+                  backgroundColor: viewMode === 'grid' ? '#2563eb' : '#f3f4f6',
+                  color: viewMode === 'grid' ? 'white' : '#6b7280',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                ⊞ Grid
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                style={{
+                  padding: '8px 16px',
+                  border: 'none',
+                  borderRadius: '6px',
+                  backgroundColor: viewMode === 'list' ? '#2563eb' : '#f3f4f6',
+                  color: viewMode === 'list' ? 'white' : '#6b7280',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                ☰ List
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Properties Grid/List */}
+        {filteredAds.length > 0 ? (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: viewMode === 'grid' 
+              ? 'repeat(auto-fit, minmax(350px, 1fr))' 
+              : '1fr',
+            gap: '24px',
+          }}>
+            {filteredAds.map((ad) => (
+              <div
+                key={ad.id}
+                style={viewMode === 'list' ? listCardStyle : cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+                }}
+              >
+                <div style={{
+                  position: 'relative',
+                  overflow: 'hidden',
+                  width: viewMode === 'list' ? '300px' : '100%',
+                  flexShrink: 0,
+                }}>
+                  <img
+                    src={ad.image || "https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=600"}
+                    alt={ad.title}
+                    style={{
+                      width: '100%',
+                      height: viewMode === 'list' ? '200px' : '250px',
+                      objectFit: 'cover',
+                      transition: 'transform 0.3s ease',
+                    }}
+                  />
+                  <div style={{
+                    position: 'absolute',
+                    top: '12px',
+                    left: '12px',
+                    backgroundColor: '#059669',
+                    color: 'white',
+                    padding: '4px 12px',
+                    borderRadius: '20px',
+                    fontSize: '0.8rem',
+                    fontWeight: '600',
+                  }}>
+                    Available
+                  </div>
+                </div>
+
+                <div style={{
+                  padding: '24px',
+                  flexGrow: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}>
+                  <h3 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    marginBottom: '8px',
+                    color: '#1f2937',
+                    lineHeight: '1.4',
+                  }}>
+                    {ad.title}
+                  </h3>
+                  
+                  <p style={{
+                    color: '#6b7280',
+                    marginBottom: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}>
+                    📍 {ad.location}
+                  </p>
+
+                  <p style={{
+                    color: '#6b7280',
+                    marginBottom: '16px',
+                    lineHeight: '1.6',
+                    flexGrow: 1,
+                  }}>
+                    {ad.description?.substring(0, viewMode === 'list' ? 150 : 100)}
+                    {ad.description?.length > (viewMode === 'list' ? 150 : 100) && '...'}
+                  </p>
+
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: 'auto',
+                  }}>
+                    <span style={{
+                      fontSize: '1.5rem',
+                      fontWeight: '700',
+                      color: '#059669',
+                    }}>
+                      {ad.price}
+                    </span>
+                    <Link
+                      to={`/ads/${ad.id}`}
+                      state={{ from: "ads" }}
+                      className="btn btn-primary"
+                      style={{
+                        padding: '10px 20px',
+                        backgroundColor: '#2563eb',
+                        color: 'white',
+                        textDecoration: 'none',
+                        borderRadius: '8px',
+                        fontWeight: '500',
+                        transition: 'all 0.3s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = '#1e40af';
+                        e.target.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = '#2563eb';
+                        e.target.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      View Details →
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{
+            textAlign: 'center',
+            padding: '80px 20px',
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          }}>
+            <div style={{
+              fontSize: '4rem',
+              marginBottom: '20px',
+            }}>🔍</div>
+            <h3 style={{
+              fontSize: '1.5rem',
+              fontWeight: '600',
+              marginBottom: '12px',
+              color: '#374151',
+            }}>
+              No properties found
+            </h3>
+            <p style={{
+              color: '#6b7280',
+              marginBottom: '24px',
+            }}>
+              Try adjusting your search criteria or filters to find more properties.
+            </p>
+            <button
+              onClick={() => {
+                setSearch('');
+                setLocationFilter('all');
+                setPriceFilter('all');
+              }}
+              className="btn btn-primary"
+              style={{
+                backgroundColor: '#2563eb',
+                color: 'white',
+                padding: '12px 24px',
+                border: 'none',
+                borderRadius: '8px',
+                fontWeight: '500',
+                cursor: 'pointer',
+              }}
+            >
+              Clear All Filters
+            </button>
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+          .list-card {
+            flex-direction: column !important;
+          }
+          .list-card img {
+            width: 100% !important;
+            height: 250px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
+
+export default Ads;

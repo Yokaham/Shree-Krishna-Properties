@@ -1,106 +1,219 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Plus } from 'lucide-react';
-import Button from './Button';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
 
+  const navStyle = {
+    background: 'linear-gradient(135deg, #1e40af 0%, #2563eb 100%)',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    position: 'sticky',
+    top: 0,
+    zIndex: 1000,
+  };
+
+  const containerStyle = {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '0 20px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: '80px',
+  };
+
+  const logoStyle = {
+    color: 'white',
+    fontSize: '1.5rem',
+    fontWeight: '700',
+    textDecoration: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+  };
+
+  const navLinksStyle = {
+    display: 'flex',
+    gap: '32px',
+    alignItems: 'center',
+    listStyle: 'none',
+  };
+
+  const linkStyle = {
+    color: 'white',
+    textDecoration: 'none',
+    fontWeight: '500',
+    padding: '8px 16px',
+    borderRadius: '6px',
+    transition: 'all 0.3s ease',
+    position: 'relative',
+  };
+
+  const activeLinkStyle = {
+    ...linkStyle,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)',
+  };
+
+  const contactStyle = {
+    backgroundColor: 'white',
+    color: '#2563eb',
+    padding: '10px 20px',
+    borderRadius: '8px',
+    fontWeight: '600',
+    textDecoration: 'none',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+  };
+
+  const mobileMenuStyle = {
+    display: isMenuOpen ? 'flex' : 'none',
+    flexDirection: 'column',
+    position: 'absolute',
+    top: '80px',
+    left: 0,
+    right: 0,
+    backgroundColor: '#1e40af',
+    padding: '20px',
+    gap: '16px',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  };
+
+  const hamburgerStyle = {
+    display: 'none',
+    flexDirection: 'column',
+    cursor: 'pointer',
+    gap: '4px',
+  };
+
+  const hamburgerLineStyle = {
+    width: '25px',
+    height: '3px',
+    backgroundColor: 'white',
+    borderRadius: '2px',
+    transition: 'all 0.3s ease',
+  };
+
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50 rounded-b-2xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 sm:h-18">
-          <Link to="/" className="flex items-center gap-2 sm:gap-3 text-gray-800 font-bold text-lg sm:text-xl">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-sm sm:text-base">
-              SK
-            </div>
-            <span className="hidden lg:inline">Shree Krishna Properties</span>
-            <span className="lg:hidden">SK Properties</span>
-          </Link>
+    <nav style={navStyle}>
+      <div style={containerStyle}>
+        <Link to="/" style={logoStyle}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#2563eb',
+            fontWeight: 'bold',
+            fontSize: '1.2rem'
+          }}>
+            SK
+          </div>
+          Shree Krishna Properties
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
-            <ul className="flex items-center gap-6">
-              <li>
-                <Link 
-                  to="/" 
-                  className={`text-gray-700 font-medium px-4 py-2 rounded-2xl transition-all duration-200 ease-in-out hover:text-blue-600 hover:bg-blue-50 ${
-                    location.pathname === '/' ? 'text-blue-600 bg-blue-50' : ''
-                  }`}
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link 
-                  to="/ads" 
-                  className={`text-gray-700 font-medium px-4 py-2 rounded-2xl transition-all duration-200 ease-in-out hover:text-blue-600 hover:bg-blue-50 ${
-                    location.pathname === '/ads' ? 'text-blue-600 bg-blue-50' : ''
-                  }`}
-                >
-                  Properties
-                </Link>
-              </li>
-            </ul>
-            <Button
-              variant="primary"
-              icon={<Plus className="w-4 h-4" />}
-              onClick={() => {/* Future expansion */}}
+        {/* Desktop Navigation */}
+        <ul style={{...navLinksStyle, '@media (max-width: 768px)': { display: 'none' }}}>
+          <li>
+            <Link 
+              to="/" 
+              style={location.pathname === '/' ? activeLinkStyle : linkStyle}
+              onMouseEnter={(e) => {
+                if (location.pathname !== '/') {
+                  e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (location.pathname !== '/') {
+                  e.target.style.backgroundColor = 'transparent';
+                }
+              }}
             >
-              Post Ad
-            </Button>
-          </div>
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link 
+              to="/ads" 
+              style={location.pathname === '/ads' ? activeLinkStyle : linkStyle}
+              onMouseEnter={(e) => {
+                if (location.pathname !== '/ads') {
+                  e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (location.pathname !== '/ads') {
+                  e.target.style.backgroundColor = 'transparent';
+                }
+              }}
+            >
+              Properties
+            </Link>
+          </li>
+          <li>
+            <a 
+              href="tel:9463255555" 
+              style={contactStyle}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+              }}
+            >
+              📞 9463255555
+            </a>
+          </li>
+        </ul>
 
-          {/* Mobile Hamburger */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden text-gray-700"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </Button>
-        </div>
-
-        {/* Mobile Menu */}
-        <div className={`md:hidden transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-64 opacity-100 pb-4' : 'max-h-0 opacity-0'} overflow-hidden`}>
-          <div className="space-y-2">
-            <li>
-              <Link 
-                to="/" 
-                className={`block text-gray-700 font-medium px-4 py-3 rounded-2xl transition-all duration-200 ease-in-out hover:text-blue-600 hover:bg-blue-50 ${
-                  location.pathname === '/' ? 'text-blue-600 bg-blue-50' : ''
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link 
-                to="/ads" 
-                className={`block text-gray-700 font-medium px-4 py-3 rounded-2xl transition-all duration-200 ease-in-out hover:text-blue-600 hover:bg-blue-50 ${
-                  location.pathname === '/ads' ? 'text-blue-600 bg-blue-50' : ''
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Properties
-              </Link>
-            </li>
-            <div className="mt-4">
-              <Button
-                variant="primary"
-                icon={<Plus className="w-4 h-4" />}
-                onClick={() => setIsMenuOpen(false)}
-                className="w-full"
-              >
-                Post Ad
-              </Button>
-            </div>
-          </div>
+        {/* Mobile Hamburger */}
+        <div 
+          style={{
+            ...hamburgerStyle,
+            '@media (max-width: 768px)': { display: 'flex' }
+          }}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          <div style={hamburgerLineStyle}></div>
+          <div style={hamburgerLineStyle}></div>
+          <div style={hamburgerLineStyle}></div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      <div style={mobileMenuStyle}>
+        <Link to="/" style={linkStyle} onClick={() => setIsMenuOpen(false)}>
+          Home
+        </Link>
+        <Link to="/ads" style={linkStyle} onClick={() => setIsMenuOpen(false)}>
+          Properties
+        </Link>
+        <a href="tel:9463255555" style={{...contactStyle, textAlign: 'center'}}>
+          📞 9463255555
+        </a>
+      </div>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .desktop-nav {
+            display: none !important;
+          }
+          .mobile-hamburger {
+            display: flex !important;
+          }
+        }
+        @media (min-width: 769px) {
+          .mobile-hamburger {
+            display: none !important;
+          }
+        }
+      `}</style>
     </nav>
   );
 }

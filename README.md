@@ -1,98 +1,70 @@
-# Shree Krishna Properties - Real Estate Platform
+# Getting Started with Create React App
 
-A modern real estate platform built with React and Supabase for Shree Krishna Properties.
-
-## Features
-
-- **Property Search & Filtering**: Advanced search with filters for sector, type, price, and more
-- **Image Carousels**: All property images displayed in responsive carousels
-- **Responsive Design**: Mobile-first design optimized for all devices
-- **Real-time Data**: Live property data from Supabase database
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (version 14 or higher)
-- npm or yarn package manager
-
-### Installation
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm start
-   ```
-
-4. Open [http://localhost:3000](http://localhost:3000) to view the application
-
-### Database Configuration
-
-The application uses Supabase for data storage. The Supabase client is configured in:
-- `src/supabaseClient.js`
-
-The database includes an `ads` table with the following structure:
-- `id` (primary key)
-- `title` (property title)
-- `price` (price in INR)
-- `location` (property location)
-- `sector` (property sector)
-- `description` (detailed description)
-- `features` (array of property features)
-- `images` (array of image URLs)
-- `property_type` (plot/kothi/flat/land)
-- `owner_listed` (boolean for owner vs agent)
-- `size` (property size in marla/units)
-- `created_at` (timestamp)
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
-- `npm start` - Runs the development server
-- `npm test` - Launches the test runner
-- `npm run build` - Builds the app for production
-- `npm run eject` - Ejects from Create React App (one-way operation)
+In the project directory, you can run:
 
-## Project Structure
+### `npm start`
 
-```
-src/
-├── components/          # Reusable UI components
-│   ├── Button.js       # Reusable button component
-│   ├── PropertyCard.js # Property listing card
-│   ├── FeatureBadge.js # Property feature badges
-│   ├── Navbar.js       # Navigation header
-│   ├── Footer.js       # Site footer
-│   └── ContactButton.js # Floating contact button
-├── pages/              # Main application pages
-│   ├── home.js         # Homepage with hero and samples
-│   ├── Ads.js          # Property listings with search/filter
-│   └── AdDetails.js    # Individual property details
-├── hooks/              # Custom React hooks
-│   └── useAds.js       # Hook for fetching and filtering ads
-├── styles/             # Global styles
-│   └── global.css      # Tailwind CSS and custom styles
-└── supabaseClient.js   # Supabase client configuration
-```
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-## Technologies Used
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-- **React** - Frontend framework
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Utility-first CSS framework
-- **Supabase** - Backend as a Service
-- **React Slick** - Image carousel component
-- **Lucide React** - Modern icon library
-- **Framer Motion** - Animation library
+### `npm test`
 
-## Key Features
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-- **Search**: Debounced search across title, location, and description
-- **Filters**: Sector, property type, price range, size, owner listing, and tags
-- **Pagination**: Server-side pagination with 12 properties per page
-- **Responsive**: Mobile-first design with proper breakpoints
-- **Image Carousels**: All property images displayed in swipeable carousels
+### `npm run build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

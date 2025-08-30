@@ -1,8 +1,63 @@
 import React, { useState } from 'react';
-import { MessageCircle } from 'lucide-react';
 
 function ContactButton() {
   const [isHovered, setIsHovered] = useState(false);
+
+  const buttonStyle = {
+    position: 'fixed',
+    bottom: '30px',
+    right: '30px',
+    backgroundColor: '#25D366',
+    width: '70px',
+    height: '70px',
+    borderRadius: '50%',
+    border: 'none',
+    cursor: 'pointer',
+    boxShadow: '0 8px 25px rgba(37, 211, 102, 0.3)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    zIndex: 1000,
+    transform: isHovered ? 'scale(1.1) translateY(-5px)' : 'scale(1)',
+    animation: 'pulse 2s infinite',
+  };
+
+  const iconStyle = {
+    width: '35px',
+    height: '35px',
+    filter: 'brightness(0) invert(1)',
+  };
+
+  const tooltipStyle = {
+    position: 'absolute',
+    right: '80px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    backgroundColor: '#1f2937',
+    color: 'white',
+    padding: '12px 16px',
+    borderRadius: '8px',
+    fontSize: '14px',
+    fontWeight: '500',
+    whiteSpace: 'nowrap',
+    opacity: isHovered ? 1 : 0,
+    visibility: isHovered ? 'visible' : 'hidden',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+  };
+
+  const arrowStyle = {
+    position: 'absolute',
+    left: '100%',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: 0,
+    height: 0,
+    borderTop: '6px solid transparent',
+    borderBottom: '6px solid transparent',
+    borderLeft: '6px solid #1f2937',
+  };
 
   const openWhatsApp = () => {
     const message = encodeURIComponent(
@@ -12,25 +67,57 @@ function ContactButton() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <>
+      <style jsx>{`
+        @keyframes pulse {
+          0% {
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+          }
+          50% {
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.5), 0 0 0 10px rgba(37, 211, 102, 0.1);
+          }
+          100% {
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.3);
+          }
+        }
+
+        @media (max-width: 768px) {
+          .whatsapp-button {
+            bottom: 20px !important;
+            right: 20px !important;
+            width: 60px !important;
+            height: 60px !important;
+          }
+          .whatsapp-icon {
+            width: 30px !important;
+            height: 30px !important;
+          }
+          .whatsapp-tooltip {
+            display: none !important;
+          }
+        }
+      `}</style>
+      
       <button
-        className="w-14 h-14 sm:w-16 sm:h-16 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+        className="whatsapp-button"
+        style={buttonStyle}
         onClick={openWhatsApp}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        aria-label="Contact us on WhatsApp"
       >
-        {/* Tooltip */}
-        <div className={`absolute right-full mr-3 bg-gray-800 text-white px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 ${
-          isHovered ? 'opacity-100 visible translate-x-0' : 'opacity-0 invisible translate-x-2'
-        }`}>
+        <div className="whatsapp-tooltip" style={tooltipStyle}>
           Chat with us on WhatsApp
-          <div className="absolute left-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-l-4 border-l-gray-800 border-t-4 border-t-transparent border-b-4 border-b-transparent"></div>
+          <div style={arrowStyle}></div>
         </div>
-        
-        {/* WhatsApp Icon */}
-        <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8" />
+        <img
+          className="whatsapp-icon"
+          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+          alt="WhatsApp"
+          style={iconStyle}
+        />
       </button>
-    </div>
+    </>
   );
 }
 
