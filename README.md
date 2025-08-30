@@ -1,14 +1,13 @@
 # Shree Krishna Properties - Real Estate Platform
 
-A modern real estate platform built with React and Supabase for property listings and management.
+A modern real estate platform built with React and Supabase for Shree Krishna Properties.
 
 ## Features
 
-- **Property Listings**: Browse and search through available properties
-- **Advanced Filtering**: Filter by sector, property type, price range, and more
-- **Image Galleries**: Interactive carousels for property images
-- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
-- **Real-time Data**: Connected to Supabase for live property data
+- **Property Search & Filtering**: Advanced search with filters for sector, type, price, and more
+- **Image Carousels**: All property images displayed in responsive carousels
+- **Responsive Design**: Mobile-first design optimized for all devices
+- **Real-time Data**: Live property data from Supabase database
 
 ## Getting Started
 
@@ -34,7 +33,7 @@ A modern real estate platform built with React and Supabase for property listing
 
 ### Database Configuration
 
-The application uses Supabase for data storage. The Supabase client configuration is located in:
+The application uses Supabase for data storage. The Supabase client is configured in:
 - `src/supabaseClient.js`
 
 The database includes an `ads` table with the following structure:
@@ -42,13 +41,14 @@ The database includes an `ads` table with the following structure:
 - `title` (property title)
 - `price` (price in INR)
 - `location` (property location)
+- `sector` (property sector)
 - `description` (detailed description)
 - `features` (array of property features)
 - `images` (array of image URLs)
-- `sector` (property sector)
 - `property_type` (plot/kothi/flat/land)
 - `owner_listed` (boolean for owner vs agent)
 - `size` (property size in marla/units)
+- `created_at` (timestamp)
 
 ## Available Scripts
 
@@ -76,7 +76,7 @@ src/
 │   └── useAds.js       # Hook for fetching and filtering ads
 ├── styles/             # Global styles
 │   └── global.css      # Tailwind CSS and custom styles
-└── supabaseClient.js   # Supabase configuration
+└── supabaseClient.js   # Supabase client configuration
 ```
 
 ## Technologies Used
@@ -89,13 +89,10 @@ src/
 - **Lucide React** - Modern icon library
 - **Framer Motion** - Animation library
 
-## Modified Files
+## Key Features
 
-- `src/pages/home.js` - Updated with modern button components
-- `src/pages/Ads.js` - Complete rebuild with search, filters, and pagination
-- `src/pages/AdDetails.js` - Enhanced with modern buttons and improved layout
-- `src/components/Button.js` - New reusable button component
-- `src/components/Navbar.js` - Updated with modern button styling
-- `src/components/Footer.js` - Updated with consistent button design
-- `src/components/ContactButton.js` - Modernized with new button component
-- `src/hooks/useAds.js` - New hook for advanced property filtering and pagination
+- **Search**: Debounced search across title, location, and description
+- **Filters**: Sector, property type, price range, size, owner listing, and tags
+- **Pagination**: Server-side pagination with 12 properties per page
+- **Responsive**: Mobile-first design with proper breakpoints
+- **Image Carousels**: All property images displayed in swipeable carousels

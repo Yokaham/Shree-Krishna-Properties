@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Phone, MessageCircle, Calendar, Hash } from "lucide-react";
+import { ArrowLeft, Phone, MessageCircle, Calendar, Hash, MapPin, Home as HomeIcon, Ruler } from "lucide-react";
 import Slider from "react-slick";
 import { supabase } from "../supabaseClient";
 import FeatureBadge from "../components/FeatureBadge";
@@ -128,22 +128,33 @@ export default function AdDetails() {
 
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
           {/* Image Gallery - Compact Size */}
-          <div className="relative h-64 sm:h-80 md:h-72">
+          <div className="relative h-56 sm:h-64 md:h-72">
             {images.length === 1 ? (
               <img
                 src={images[0]}
                 alt={ad.title}
-                className="w-full h-full object-cover"
+                className="w-full h-56 sm:h-64 md:h-72 object-cover"
                 loading="lazy"
               />
             ) : (
-              <Slider {...gallerySettings}>
+              <Slider {...{
+                dots: true,
+                infinite: true,
+                speed: 500,
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                arrows: true,
+                autoplay: true,
+                autoplaySpeed: 3000,
+                swipeToSlide: true,
+                touchMove: true,
+              }}>
                 {images.map((img, index) => (
                   <div key={index}>
                     <img
                       src={img}
                       alt={`${ad.title} ${index + 1}`}
-                      className="w-full h-64 sm:h-80 md:h-72 object-cover"
+                      className="w-full h-56 sm:h-64 md:h-72 object-cover"
                       loading="lazy"
                     />
                   </div>
@@ -165,13 +176,43 @@ export default function AdDetails() {
             <div className="mb-6 sm:mb-8">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">{ad.title}</h1>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex items-center text-gray-600">
-                  <span className="mr-2 text-lg">📍</span>
+                <div className="flex items-center gap-2 text-gray-600">
+                  <MapPin className="w-5 h-5" />
                   <span className="text-base sm:text-lg">{ad.location}</span>
                 </div>
-                <div className="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-2xl font-bold text-lg sm:text-xl shadow-lg self-start sm:self-auto">
+                <div className="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold text-lg sm:text-xl shadow-lg self-start sm:self-auto">
                   {formatPrice(ad.price)}
                 </div>
+              </div>
+            </div>
+
+            {/* Property Quick Info */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6 sm:mb-8">
+              {ad.sector && (
+                <div className="bg-gray-50 rounded-2xl p-4 text-center">
+                  <div className="text-2xl mb-2">🏘️</div>
+                  <p className="text-xs text-gray-500 mb-1">Sector</p>
+                  <p className="font-semibold text-gray-800">{ad.sector}</p>
+                </div>
+              )}
+              {ad.property_type && (
+                <div className="bg-gray-50 rounded-2xl p-4 text-center">
+                  <HomeIcon className="w-6 h-6 mx-auto mb-2 text-blue-600" />
+                  <p className="text-xs text-gray-500 mb-1">Type</p>
+                  <p className="font-semibold text-gray-800 capitalize">{ad.property_type}</p>
+                </div>
+              )}
+              {ad.size && (
+                <div className="bg-gray-50 rounded-2xl p-4 text-center">
+                  <Ruler className="w-6 h-6 mx-auto mb-2 text-green-600" />
+                  <p className="text-xs text-gray-500 mb-1">Size</p>
+                  <p className="font-semibold text-gray-800">{ad.size}</p>
+                </div>
+              )}
+              <div className="bg-gray-50 rounded-2xl p-4 text-center">
+                <div className="text-2xl mb-2">{ad.owner_listed ? '👤' : '🏢'}</div>
+                <p className="text-xs text-gray-500 mb-1">Listed By</p>
+                <p className="font-semibold text-gray-800">{ad.owner_listed ? 'Owner' : 'Agent'}</p>
               </div>
             </div>
 
@@ -179,7 +220,7 @@ export default function AdDetails() {
             {ad.features && ad.features.length > 0 && (
               <div className="mb-6 sm:mb-8">
                 <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Property Features</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="flex flex-wrap gap-3">
                   {ad.features.map((feature, index) => (
                     <FeatureBadge key={index} feature={feature} />
                   ))}
@@ -230,7 +271,7 @@ export default function AdDetails() {
                 {ad.property_type && (
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
-                      <span className="text-lg">🏠</span>
+                      <HomeIcon className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Property Type</p>
@@ -242,7 +283,7 @@ export default function AdDetails() {
             </div>
 
             {/* Contact Section */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl p-6 sm:p-8 text-white">
+            <div className="bg-blue-600 rounded-2xl p-6 sm:p-8 text-white">
               <h3 className="text-lg sm:text-xl font-semibold mb-4">Interested in this property?</h3>
               <p className="mb-6 opacity-90 text-sm sm:text-base">
                 Contact our expert team for more details, site visits, and personalized assistance.
