@@ -85,7 +85,11 @@ const useAds = (filters = {}, searchQuery = '', page = 1, pageSize = 12) => {
         setError(error.message);
         setAds([]);
       } else {
-        setAds(data || []);
+        if (page === 1) {
+          setAds(data || []);
+        } else {
+          setAds(prev => [...prev, ...(data || [])]);
+        }
         setTotal(count || 0);
         setHasMore((count || 0) > offset + pageSize);
       }

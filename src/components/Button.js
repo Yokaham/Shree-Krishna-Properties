@@ -16,7 +16,7 @@ const Button = ({
   
   const variants = {
     primary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md focus:ring-blue-500',
-    secondary: 'bg-gray-100 hover:bg-gray-200 text-gray-800 shadow-sm hover:shadow-md focus:ring-gray-500',
+    secondary: 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 shadow-sm hover:shadow-md focus:ring-gray-500',
     outline: 'border border-gray-200 hover:bg-gray-50 text-gray-700 focus:ring-gray-500',
     success: 'bg-green-600 hover:bg-green-700 text-white shadow-sm hover:shadow-md focus:ring-green-500',
     danger: 'bg-red-600 hover:bg-red-700 text-white shadow-sm hover:shadow-md focus:ring-red-500',
@@ -38,12 +38,12 @@ const Button = ({
       className={classes}
       onClick={onClick}
       disabled={disabled}
-      whileHover={{ scale: disabled ? 1 : 1.05 }}
-      whileTap={{ scale: disabled ? 1 : 0.95 }}
+      whileHover={{ scale: disabled ? 1 : 1.02, y: disabled ? 0 : -1 }}
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      transition={{ duration: 0.2 }}
       {...props}
     >
       {icon && <span className="mr-2">{icon}</span>}
-      }
       {children}
     </motion.button>
   );

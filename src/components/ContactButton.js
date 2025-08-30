@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { MessageCircle } from 'lucide-react';
-import Button from './Button';
 
 function ContactButton() {
   const [isHovered, setIsHovered] = useState(false);
@@ -14,13 +13,11 @@ function ContactButton() {
 
   return (
     <div className="fixed bottom-6 right-6 z-50">
-      <Button
-        variant="success"
-        size="icon"
+      <button
+        className="w-14 h-14 sm:w-16 sm:h-16 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
         onClick={openWhatsApp}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="w-14 h-14 sm:w-16 sm:h-16 shadow-lg hover:shadow-xl"
       >
         {/* Tooltip */}
         <div className={`absolute right-full mr-3 bg-gray-800 text-white px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-200 ${
@@ -32,7 +29,7 @@ function ContactButton() {
         
         {/* WhatsApp Icon */}
         <MessageCircle className="w-7 h-7 sm:w-8 sm:h-8" />
-      </Button>
+      </button>
     </div>
   );
 }
