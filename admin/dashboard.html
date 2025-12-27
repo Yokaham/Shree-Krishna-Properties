@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Admin Dashboard | Shree Krishna Properties</title>
+		<meta name="robots" content="noindex, nofollow" />
+		<link rel="stylesheet" href="../css/admin.css" />
+	</head>
+	<body class="admin-page">
+		<header class="admin-header" role="banner">
+			<div class="admin-container admin-header__inner">
+				<h1 class="admin-header__heading">Admin Dashboard</h1>
+				<a class="admin-btn admin-btn--secondary" href="login.html" aria-label="Logout (UI only)">Logout</a>
+			</div>
+		</header>
+
+		<main class="admin-main admin-main--dashboard" role="main">
+			<div class="admin-container">
+				<div class="admin-grid">
+					<section class="admin-card" aria-labelledby="add-title">
+						<header class="admin-card__header">
+							<h2 id="add-title" class="admin-card__title">Add New Property</h2>
+							<p class="admin-card__subtitle">Fill details and save (frontend only).</p>
+						</header>
+
+						<form class="admin-form" action="dashboard.html" method="post" enctype="multipart/form-data">
+							<div class="admin-form__grid">
+								<div class="form-field">
+									<label class="form-field__label" for="property-title">Property Title</label>
+									<input class="form-field__input" id="property-title" name="title" type="text" required />
+								</div>
+
+								<div class="form-field">
+									<label class="form-field__label" for="property-price">Price</label>
+									<input class="form-field__input" id="property-price" name="price" type="text" required />
+								</div>
+
+								<div class="form-field">
+									<label class="form-field__label" for="property-location">Location</label>
+									<select class="form-field__select" id="property-location" name="location" required>
+										<option value="" selected>Select location</option>
+										<option value="chandigarh">Chandigarh</option>
+										<option value="mohali">Mohali</option>
+										<option value="panchkula">Panchkula</option>
+									</select>
+								</div>
+
+								<div class="form-field">
+									<label class="form-field__label" for="property-sector">Sector</label>
+									<input class="form-field__input" id="property-sector" name="sector" type="text" required />
+								</div>
+
+								<div class="form-field">
+									<label class="form-field__label" for="property-type">Property Type</label>
+									<select class="form-field__select" id="property-type" name="type" required>
+										<option value="" selected>Select type</option>
+										<option value="plot">Plot</option>
+										<option value="kothi">Kothi</option>
+										<option value="flat">Flat</option>
+										<option value="commercial">Commercial</option>
+									</select>
+								</div>
+
+								<div class="form-field">
+									<label class="form-field__label" for="property-area">Area</label>
+									<input class="form-field__input" id="property-area" name="area" type="text" required />
+								</div>
+
+								<div class="form-field form-field--full">
+									<label class="form-field__label" for="property-description">Description</label>
+									<textarea
+										class="form-field__textarea"
+										id="property-description"
+										name="description"
+										rows="5"
+										required
+									></textarea>
+								</div>
+							</div>
+
+							<fieldset class="admin-fieldset" aria-labelledby="tags-title">
+								<legend id="tags-title" class="admin-fieldset__legend">Tags</legend>
+								<div class="admin-checklist" role="list">
+									<label class="admin-checklist__item" role="listitem">
+										<input class="admin-checklist__input" type="checkbox" name="tags" value="corner" />
+										<span class="admin-checklist__label">Corner Property</span>
+									</label>
+									<label class="admin-checklist__item" role="listitem">
+										<input class="admin-checklist__input" type="checkbox" name="tags" value="park_facing" />
+										<span class="admin-checklist__label">Park Facing</span>
+									</label>
+									<label class="admin-checklist__item" role="listitem">
+										<input class="admin-checklist__input" type="checkbox" name="tags" value="north_facing" />
+										<span class="admin-checklist__label">North Facing</span>
+									</label>
+									<label class="admin-checklist__item" role="listitem">
+										<input class="admin-checklist__input" type="checkbox" name="tags" value="b_road" />
+										<span class="admin-checklist__label">B-Road</span>
+									</label>
+									<label class="admin-checklist__item" role="listitem">
+										<input class="admin-checklist__input" type="checkbox" name="tags" value="gated" />
+										<span class="admin-checklist__label">Gated Society</span>
+									</label>
+									<label class="admin-checklist__item" role="listitem">
+										<input class="admin-checklist__input" type="checkbox" name="tags" value="newly_built" />
+										<span class="admin-checklist__label">Newly Built</span>
+									</label>
+									<label class="admin-checklist__item" role="listitem">
+										<input class="admin-checklist__input" type="checkbox" name="tags" value="loan_available" />
+										<span class="admin-checklist__label">Loan Available</span>
+									</label>
+									<label class="admin-checklist__item" role="listitem">
+										<input class="admin-checklist__input" type="checkbox" name="tags" value="possession_ready" />
+										<span class="admin-checklist__label">Possession Ready</span>
+									</label>
+								</div>
+							</fieldset>
+
+							<fieldset class="admin-fieldset" aria-labelledby="media-title">
+								<legend id="media-title" class="admin-fieldset__legend">Media Uploads (Optional)</legend>
+								<div class="admin-form__grid">
+									<div class="form-field">
+										<label class="form-field__label" for="property-images">Images (multiple)</label>
+										<input
+											class="form-field__input"
+											id="property-images"
+											name="images"
+											type="file"
+											accept="image/*"
+											multiple
+										/>
+									</div>
+
+									<div class="form-field">
+										<label class="form-field__label" for="property-video">Video (single)</label>
+										<input
+											class="form-field__input"
+											id="property-video"
+											name="video"
+											type="file"
+											accept="video/*"
+										/>
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="admin-form__actions">
+								<button class="admin-btn admin-btn--primary" type="submit">Save Property</button>
+							</div>
+						</form>
+					</section>
+
+					<section class="admin-card" aria-labelledby="existing-title">
+						<header class="admin-card__header">
+							<h2 id="existing-title" class="admin-card__title">Existing Properties</h2>
+							<p class="admin-card__subtitle">Placeholder data (no backend).</p>
+						</header>
+
+						<div class="admin-table" role="region" aria-label="Existing properties table">
+							<table class="admin-table__table">
+								<thead class="admin-table__head">
+									<tr class="admin-table__row">
+										<th class="admin-table__th" scope="col">Title</th>
+										<th class="admin-table__th" scope="col">Location</th>
+										<th class="admin-table__th" scope="col">Price</th>
+										<th class="admin-table__th" scope="col">Actions</th>
+									</tr>
+								</thead>
+								<tbody class="admin-table__body">
+									<tr class="admin-table__row">
+										<td class="admin-table__td">2 BHK Apartment</td>
+										<td class="admin-table__td">Chandigarh</td>
+										<td class="admin-table__td">₹ 45,00,000</td>
+										<td class="admin-table__td">
+											<div class="admin-actions">
+												<button class="admin-btn admin-btn--small admin-btn--secondary" type="button">Edit</button>
+												<button class="admin-btn admin-btn--small admin-btn--danger" type="button">Delete</button>
+											</div>
+										</td>
+									</tr>
+									<tr class="admin-table__row">
+										<td class="admin-table__td">Independent House</td>
+										<td class="admin-table__td">Mohali</td>
+										<td class="admin-table__td">₹ 1,25,00,000</td>
+										<td class="admin-table__td">
+											<div class="admin-actions">
+												<button class="admin-btn admin-btn--small admin-btn--secondary" type="button">Edit</button>
+												<button class="admin-btn admin-btn--small admin-btn--danger" type="button">Delete</button>
+											</div>
+										</td>
+									</tr>
+									<tr class="admin-table__row">
+										<td class="admin-table__td">Commercial Space</td>
+										<td class="admin-table__td">Panchkula</td>
+										<td class="admin-table__td">₹ 75,00,000</td>
+										<td class="admin-table__td">
+											<div class="admin-actions">
+												<button class="admin-btn admin-btn--small admin-btn--secondary" type="button">Edit</button>
+												<button class="admin-btn admin-btn--small admin-btn--danger" type="button">Delete</button>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>

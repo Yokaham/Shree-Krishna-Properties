@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Admin Login | Shree Krishna Properties</title>
+		<meta name="robots" content="noindex, nofollow" />
+		<link rel="stylesheet" href="../css/admin.css" />
+	</head>
+	<body class="admin-page">
+		<header class="admin-header" role="banner">
+			<div class="admin-container">
+				<p class="admin-header__title">Shree Krishna Properties – Admin Panel</p>
+			</div>
+		</header>
+
+		<main class="admin-main" role="main">
+			<div class="admin-container">
+				<section class="login" aria-labelledby="login-title">
+					<div class="login-card">
+						<h1 id="login-title" class="login-card__title">Admin Login</h1>
+
+						<form class="login-form" action="dashboard.html" method="get">
+							<div class="form-field">
+								<label class="form-field__label" for="email">Email</label>
+								<input
+									class="form-field__input"
+									id="email"
+									name="email"
+									type="email"
+									autocomplete="username"
+									required
+								/>
+							</div>
+
+							<div class="form-field">
+								<label class="form-field__label" for="password">Password</label>
+								<input
+									class="form-field__input"
+									id="password"
+									name="password"
+									type="password"
+									autocomplete="current-password"
+									required
+								/>
+							</div>
+
+							<div class="login-form__actions">
+								<button class="admin-btn admin-btn--primary" type="submit">Login</button>
+							</div>
+						</form>
+					</div>
+				</section>
+			</div>
+		</main>
+	</body>
+</html>

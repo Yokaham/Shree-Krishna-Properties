@@ -1,0 +1,416 @@
+/*
+	Shree Krishna Properties — Admin Stylesheet
+	- Internal use (admin panel)
+	- No frameworks
+	- Neutral palette, class-based selectors only
+	- Desktop-first with responsive adjustments
+*/
+
+/* ---------- Theme / Base ---------- */
+
+.admin-page {
+	--bg: #f3f4f6;
+	--surface: #ffffff;
+	--text: #111827;
+	--muted: #4b5563;
+	--border: rgba(17, 24, 39, 0.12);
+	--primary: #1f2937;
+	--primary-contrast: #ffffff;
+	--shadow: 0 14px 40px rgba(17, 24, 39, 0.12);
+	--shadow-soft: 0 8px 20px rgba(17, 24, 39, 0.10);
+	--radius: 14px;
+	--radius-sm: 12px;
+	--container: 1120px;
+
+	margin: 0;
+	min-height: 100vh;
+	background: var(--bg);
+	color: var(--text);
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Liberation Sans",
+		sans-serif;
+	line-height: 1.5;
+	display: flex;
+	flex-direction: column;
+}
+
+.admin-container {
+	width: min(100% - 3rem, var(--container));
+	margin-inline: auto;
+}
+
+/* ---------- Header ---------- */
+
+.admin-header {
+	border-bottom: 1px solid var(--border);
+	background: rgba(255, 255, 255, 0.7);
+	backdrop-filter: blur(10px);
+}
+
+.admin-header__title {
+	margin: 0;
+	padding: 1.25rem 0;
+	font-weight: 800;
+	letter-spacing: -0.01em;
+}
+
+/* Dashboard header variant */
+
+.admin-header__inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1rem 0;
+}
+
+.admin-header__heading {
+	margin: 0;
+	font-size: 1.25rem;
+	font-weight: 900;
+	letter-spacing: -0.01em;
+}
+
+/* ---------- Main / Login Layout ---------- */
+
+.admin-main {
+	flex: 1;
+	display: grid;
+	place-items: center;
+	padding: 3rem 0;
+}
+
+.admin-main--dashboard {
+	place-items: start;
+}
+
+.login {
+	width: 100%;
+	display: grid;
+	place-items: center;
+}
+
+.login-card {
+	width: min(520px, 100%);
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	padding: 1.75rem;
+}
+
+.login-card__title {
+	margin: 0 0 1.25rem;
+	font-size: 1.5rem;
+	line-height: 1.2;
+}
+
+/* ---------- Form Fields ---------- */
+
+.login-form {
+	display: grid;
+	gap: 1rem;
+}
+
+.form-field {
+	display: grid;
+	gap: 0.4rem;
+}
+
+.form-field__label {
+	color: var(--muted);
+	font-weight: 700;
+}
+
+.form-field__input {
+	width: 100%;
+	padding: 0.85rem 0.95rem;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border);
+	background: #ffffff;
+	color: var(--text);
+	box-shadow: 0 1px 0 rgba(17, 24, 39, 0.03);
+}
+
+.form-field__input:hover {
+	border-color: rgba(17, 24, 39, 0.22);
+}
+
+.form-field__input:focus {
+	outline: none;
+	border-color: rgba(31, 41, 55, 0.55);
+	box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.16);
+}
+
+.form-field__select {
+	width: 100%;
+	padding: 0.85rem 0.95rem;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border);
+	background: #ffffff;
+	color: var(--text);
+}
+
+.form-field__select:hover {
+	border-color: rgba(17, 24, 39, 0.22);
+}
+
+.form-field__select:focus {
+	outline: none;
+	border-color: rgba(31, 41, 55, 0.55);
+	box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.16);
+}
+
+.form-field__textarea {
+	width: 100%;
+	padding: 0.85rem 0.95rem;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--border);
+	background: #ffffff;
+	color: var(--text);
+	resize: vertical;
+}
+
+.form-field__textarea:hover {
+	border-color: rgba(17, 24, 39, 0.22);
+}
+
+.form-field__textarea:focus {
+	outline: none;
+	border-color: rgba(31, 41, 55, 0.55);
+	box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.16);
+}
+
+.form-field--full {
+	grid-column: 1 / -1;
+}
+
+/* ---------- Buttons ---------- */
+
+.login-form__actions {
+	margin-top: 0.25rem;
+	display: flex;
+}
+
+.admin-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.85rem 1rem;
+	border-radius: 999px;
+	border: 1px solid transparent;
+	font-weight: 800;
+	text-decoration: none;
+	cursor: pointer;
+	transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease,
+		border-color 140ms ease;
+}
+
+.admin-btn--secondary {
+	background: #ffffff;
+	color: var(--text);
+	border-color: rgba(17, 24, 39, 0.18);
+	box-shadow: 0 1px 0 rgba(17, 24, 39, 0.03);
+}
+
+.admin-btn--secondary:hover {
+	border-color: rgba(17, 24, 39, 0.28);
+	transform: translateY(-1px);
+}
+
+.admin-btn--secondary:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.14);
+}
+
+.admin-btn--danger {
+	background: #ffffff;
+	color: #7f1d1d;
+	border-color: rgba(127, 29, 29, 0.22);
+}
+
+.admin-btn--danger:hover {
+	border-color: rgba(127, 29, 29, 0.32);
+	transform: translateY(-1px);
+}
+
+.admin-btn--small {
+	padding: 0.55rem 0.8rem;
+	font-weight: 800;
+}
+
+.admin-btn--primary {
+	width: 100%;
+	background: var(--primary);
+	color: var(--primary-contrast);
+	box-shadow: var(--shadow-soft);
+}
+
+.admin-btn--primary:hover {
+	transform: translateY(-1px);
+	box-shadow: var(--shadow);
+}
+
+.admin-btn--primary:focus {
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.22), var(--shadow-soft);
+}
+
+/* ---------- Reusable Card (Dashboard sections) ---------- */
+
+.admin-card {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow-soft);
+	padding: 1.5rem;
+}
+
+.admin-card__title {
+	margin: 0;
+	font-size: 1.25rem;
+}
+
+.admin-card__header {
+	display: grid;
+	gap: 0.25rem;
+	margin-bottom: 1rem;
+}
+
+.admin-card__subtitle {
+	margin: 0;
+	color: var(--muted);
+}
+
+/* ---------- Dashboard Layout ---------- */
+
+.admin-grid {
+	display: grid;
+	grid-template-columns: 1.15fr 0.85fr;
+	gap: 1.25rem;
+	align-items: start;
+	padding: 1.75rem 0;
+}
+
+.admin-form {
+	display: grid;
+	gap: 1.25rem;
+}
+
+.admin-form__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+}
+
+.admin-fieldset {
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	padding: 1rem;
+}
+
+.admin-fieldset__legend {
+	padding: 0 0.35rem;
+	font-weight: 900;
+	color: var(--text);
+}
+
+.admin-checklist {
+	margin-top: 0.75rem;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.65rem 1rem;
+}
+
+.admin-checklist__item {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	padding: 0.65rem 0.75rem;
+	border-radius: 12px;
+	border: 1px solid rgba(17, 24, 39, 0.10);
+	background: rgba(255, 255, 255, 0.7);
+}
+
+.admin-checklist__input {
+	width: 18px;
+	height: 18px;
+}
+
+.admin-checklist__label {
+	color: var(--text);
+	font-weight: 700;
+}
+
+.admin-form__actions {
+	display: flex;
+}
+
+/* ---------- Table ---------- */
+
+.admin-table {
+	overflow-x: auto;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+}
+
+.admin-table__table {
+	width: 100%;
+	border-collapse: collapse;
+	background: var(--surface);
+}
+
+.admin-table__head {
+	background: rgba(17, 24, 39, 0.04);
+}
+
+.admin-table__th,
+.admin-table__td {
+	padding: 0.85rem 0.9rem;
+	text-align: left;
+	border-top: 1px solid var(--border);
+	white-space: nowrap;
+}
+
+.admin-table__th {
+	font-size: 0.95rem;
+	color: var(--muted);
+	font-weight: 900;
+}
+
+.admin-table__td {
+	color: var(--text);
+}
+
+.admin-actions {
+	display: inline-flex;
+	gap: 0.5rem;
+}
+
+/* ---------- Responsive Adjustments ---------- */
+
+@media (max-width: 640px) {
+	.admin-container {
+		width: min(100% - 2rem, var(--container));
+	}
+
+	.admin-main {
+		padding: 2rem 0;
+	}
+
+	.login-card {
+		padding: 1.25rem;
+	}
+
+	.admin-grid {
+		grid-template-columns: 1fr;
+		padding: 1.25rem 0;
+	}
+
+	.admin-form__grid {
+		grid-template-columns: 1fr;
+	}
+
+	.admin-checklist {
+		grid-template-columns: 1fr;
+	}
+}
