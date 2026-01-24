@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Property | Shree Krishna Properties</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body class="admin-page">
+
+<header class="admin-header">
+  <div class="admin-container">
+    <h1 class="admin-header__title">Edit Property</h1>
+  </div>
+</header>
+
+<main class="admin-main">
+  <div class="admin-container">
+
+    <!-- CURRENT PROPERTY DETAILS -->
+    <section class="admin-section">
+      <h2 class="admin-section__title">Current Property Details</h2>
+
+      <div class="admin-card" id="current-property">
+        <p><strong>Title:</strong> <span id="current-title">—</span></p>
+        <p><strong>Price:</strong> <span id="current-price">—</span></p>
+        <p><strong>Location:</strong> <span id="current-location">—</span></p>
+        <p><strong>Locality:</strong> <span id="current-locality">—</span></p>
+        <p><strong>Type:</strong> <span id="current-type">—</span></p>
+        <p><strong>Area:</strong> <span id="current-area">—</span></p>
+        <p><strong>Description:</strong></p>
+        <p id="current-description" class="admin-muted">—</p>
+
+        <p><strong>Tags:</strong></p>
+        <ul id="current-tags" class="admin-tag-list"></ul>
+      </div>
+    </section>
+
+    <!-- UPDATE FORM -->
+    <section class="admin-section">
+      <h2 class="admin-section__title">Update Property Details</h2>
+      <p class="admin-muted">Leave fields blank to keep existing values.</p>
+      
+      <form id="edit-property-form" class="admin-form">
+
+        <div class="form-field">
+          <label>Title</label>
+          <input type="text" name="title" class="form-field__input" />
+        </div>
+
+        <div class="form-field">
+          <label>Price</label>
+          <input type="text" name="price" class="form-field__input" />
+        </div>
+
+        <div class="form-field">
+          <label>Location</label>
+          <input type="text" name="location" class="form-field__input" />
+        </div>
+
+        <div class="form-field">
+          <label>Locality</label>
+          <input type="text" name="locality" class="form-field__input" />
+        </div>
+
+        <div class="form-field">
+          <label>Type</label>
+          <input type="text" name="type" class="form-field__input" />
+        </div>
+
+        <div class="form-field">
+          <label>Area</label>
+          <input type="text" name="area" class="form-field__input" />
+        </div>
+
+        <div class="form-field">
+          <label>Description</label>
+          <textarea name="description" rows="4" class="form-field__textarea"></textarea>
+        </div>
+
+        <div class="form-field">
+          <label>Update Tags</label>
+          <div id="edit-tags" class="admin-tag-list">
+            <!-- checkboxes injected later -->
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="admin-btn admin-btn--primary">
+            Update Property
+          </button>
+          <a href="dashboard.html" class="admin-btn admin-btn--secondary">
+            Cancel
+          </a>
+        </div>
+
+      </form>
+    </section>
+
+  </div>
+</main>
+
+<script type="module" src="../js/admin-edit.js"></script>
+</body>
+</html>

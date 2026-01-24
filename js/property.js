@@ -7,97 +7,92 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-
 const params = new URLSearchParams(window.location.search);
 const propertyId = params.get("id");
 
-if (!propertyId) {
-  console.error("No property ID found in URL");
-} else {
-  renderProperty(propertyId);
-}
+if (!propertyId) return;
+renderProperty(propertyId);
 
 async function renderProperty(id) {
   try {
     const docRef = doc(db, "properties", id);
     const docSnap = await getDoc(docRef);
 
-    if (!docSnap.exists()) {
-      console.error("Property not found");
-      return;
-    }
+    if (!docSnap.exists()) return;
 
     const data = docSnap.data();
-    // --- Image gallery rendering ---
-const galleryContainer = document.createElement("div");
-galleryContainer.className = "property-gallery";
 
-if (Array.isArray(data.images) && data.images.length) {
-  data.images.forEach((img) => {
-    const imageEl = document.createElement("img");
-    imageEl.src = img.url;
-    imageEl.alt = "Property image";
-    imageEl.className = "property-gallery__image";
-    galleryContainer.appendChild(imageEl);
-  });
-} else {
-  const placeholder = document.createElement("div");
-  placeholder.className = "property-gallery__placeholder";
+    /* ---------------- BASIC INFO ---------------- */
 
-  placeholder.innerHTML = `
-    <div class="property-gallery__placeholder-box">
-      No images available
-    </div>
-  `;
-
-  galleryContainer.appendChild(placeholder);
-}
-
-
-// Insert gallery in a clearly visible container
-const titleEl = document.getElementById("property-title");
-if (titleEl && titleEl.parentElement) {
-  titleEl.insertAdjacentElement("afterend", galleryContainer);
-} else if (headerSection && headerSection.parentElement) {
-  headerSection.parentElement.insertBefore(
-    galleryContainer,
-    headerSection.nextSibling
-  );
-}
-
-
-
-    // Render tags
-    
-    if (Array.isArray(data.tags) && data.tags.length) {
-        const tagsContainer = document.createElement("ul");
-        tagsContainer.className = "property-tags";
-        
-        data.tags.forEach((tag) => {
-            const li = document.createElement("li");
-            li.className = "property-tag";
-            li.textContent = tag.replace(/_/g, " ");
-            tagsContainer.appendChild(li);
-        });
-        // Insert tags below the subtitle
-  
-        const subtitleEl = document.querySelector(".section-subtitle");
-        if (subtitleEl && subtitleEl.parentElement) {
-            subtitleEl.parentElement.appendChild(tagsContainer);
-        }
-    }
-
-
-    // Title
+    const titleEl = document.getElementById("property-title");
     if (titleEl) titleEl.textContent = data.title || "Property";
 
-    // Price
     const priceEl = document.querySelector(".property-detail__price");
     if (priceEl) priceEl.textContent = data.price || "Price on request";
 
-    // Location subtitle
     const subtitleEl = document.querySelector(".section-subtitle");
     if (subtitleEl) {
       subtitleEl.textContent = `${data.locality || ""}${data.location ? ", " + data.location : ""}`;
     }
 
-    // Details table
+    /* ---------------- TAGS ---------------- */
+
+    if (Array.isArray(data.tags) && data.tags.length) {
+      const tagsContainer = document.createElement("ul");
+      tagsContainer.className = "property-tags";
+
+      data.tags.forEach((tag) => {
+        const li = document.createElement("li");
+        li.className = "property-tag";
+        li.textContent = tag.replace(/_/g, " ");
+        tagsContainer.appendChild(li);
+      });
+
+      if (subtitleEl && subtitleEl.parentElement) {
+        subtitleEl.parentElement.appendChild(tagsContainer);
+      }
+    }
+
+    /* ---------------- IMAGE GALLERY ---------------- */
+
+    const galleryContainer = document.querySelector(".property-detail__gallery");
+    if (!galleryContainer) return;
+
+    galleryContainer.innerHTML = "";
+
+    if (Array.isArray(data.images) && data.images.length) {
+      data.images.forEach((img, index) => {
+        const card = document.createElement("div");
+        card.className = "property-card";
+        card.setAttribute("role", "listitem");
+
+        card.innerHTML = `
+          <div class="property-card__media">
+            <img
+              src="${img.url}"
+              alt="Property image ${index + 1}"
+              class="property-gallery__image"
+            />
+          </div>
+        `;
+
+        galleryContainer.appendChild(card);
+      });
+    } else {
+      const placeholderCard = document.createElement("div");
+      placeholderCard.className = "property-card";
+      placeholderCard.setAttribute("role", "listitem");
+
+      placeholderCard.innerHTML = `
+        <div class="property-card__media">
+          <div class="property-card__image-placeholder">
+            No images available
+          </div>
+        </div>
+      `;
+
+      galleryContainer.appendChild(placeholderCard);
+    }
+
+    /* ---------------- DETAILS TABLE ---------------- */
+
     const detailsTable = document.querySelector(".details-table tbody");
     if (detailsTable) {
       detailsTable.innerHTML = `
@@ -108,11 +103,12 @@ if (titleEl && titleEl.parentElement) {
       `;
     }
 
-    // Description
+    /* ---------------- DESCRIPTION ---------------- */
+
     const descEl = document.querySelector(".property-detail__description-text");
     if (descEl) descEl.textContent = data.description || "";
 
-  } catch (error) {
-    console.error("Error rendering property:", error);
+  } catch {
+    // Handle errors silently on property details page
   }
 }

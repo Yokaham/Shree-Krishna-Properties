@@ -12,7 +12,6 @@ async function renderAds() {
     const querySnapshot = await getDocs(collection(db, "properties"));
 
     grid.innerHTML = ""; // remove hardcoded ads
-
     querySnapshot.forEach((doc) => {
       const data = doc.data();
 
@@ -30,11 +29,10 @@ const tagsHtml = Array.isArray(data.tags) && data.tags.length
 const thumbnail =
   Array.isArray(data.images) && data.images.length
     ? `<img class="property-card__image" src="${data.images[0].url}" alt="Property image" />`
-    : `<div class="property-card__image property-card__image--placeholder">No Image</div>`;
+    : `<div class="property-card__image property-card__image--placeholder" aria-label="No Image Available" >No Image Available</div>`;
 
 card.innerHTML = `
   ${thumbnail}
-
   <div class="property-card__content">
     <h3 class="property-card__title">${data.title || "Untitled Property"}</h3>
 
@@ -58,8 +56,8 @@ card.innerHTML = `
 
       grid.appendChild(card);
     });
-  } catch (error) {
-    console.error("Error rendering ads:", error);
+  } catch {
+    // Handle errors silently on ads page
   }
 }
 

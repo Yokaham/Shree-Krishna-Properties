@@ -5,7 +5,7 @@
 // - If a user is signed in, do nothing (allow access).
 
 import { auth, db, storage } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 
 onAuthStateChanged(auth, (user) => {
@@ -14,7 +14,6 @@ onAuthStateChanged(auth, (user) => {
 		window.location.href = "./login.html";
 	}
 });
-import { signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 const logoutBtn = document.getElementById("logoutBtn");
 
@@ -30,13 +29,9 @@ if (logoutBtn) {
     }
   });
 }
-// --- Firestore write preparation (no write yet) ---
 
 const propertyForm = document.querySelector(".admin-form");
 
-if (propertyForm instanceof HTMLFormElement) {
-  console.log("Property form detected and ready for Firestore integration");
-}
 // --- Firestore: add one property (text-only test) ---
 
 import {
@@ -45,7 +40,8 @@ import {
   serverTimestamp,
   getDocs,
   updateDoc,
-  doc
+  doc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 import {
@@ -54,15 +50,15 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
 
-
-propertyForm.addEventListener("submit", async (event) => {
+if (propertyForm) {
+  propertyForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   try {
     const formData = new FormData(propertyForm);
 
     const tags = [...propertyForm.querySelectorAll('input[name="tags"]:checked')]
-  .map((input) => input.value);
+    .map((input) => input.value);
   
   const propertyData = {
     title: formData.get("title"),
@@ -118,6 +114,7 @@ propertyForm.reset();
     alert("Failed to save property. Check console.");
   }
 });
+}
 // --- Firestore: read properties (admin verification step) ---
 
 async function fetchPropertiesForAdmin() {
@@ -146,8 +143,8 @@ async function fetchPropertiesForAdmin() {
   <td>${data.price || "-"}</td>
   <td>${tagText}</td>
   <td>
-    <button class="admin-btn admin-btn--small">Edit</button>
-    <button class="admin-btn admin-btn--small admin-btn--danger" data-id="${doc.id}">Delete</button>
+  <a class="admin-btn admin-btn--small" href="edit-property.html?id=${doc.id}"> Edit</a>
+  <button class="admin-btn admin-btn--small admin-btn--danger" data-id="${doc.id}">Delete</button>
   </td>
 `;
 
@@ -162,8 +159,6 @@ async function fetchPropertiesForAdmin() {
 
 fetchPropertiesForAdmin();
 // --- Firestore: delete property ---
-
-import { deleteDoc} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 document.addEventListener("click", async (event) => {
   const deleteBtn = event.target.closest(".admin-btn--danger");

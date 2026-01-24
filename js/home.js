@@ -9,9 +9,9 @@ import {
   limit
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-const grid = document.querySelector(".property-grid");
 
 async function renderFeaturedProperties() {
+  const grid = document.getElementById("home-featured-grid");
   if (!grid) return;
 
   try {
@@ -34,22 +34,18 @@ async function renderFeaturedProperties() {
       const thumbnail =
         Array.isArray(data.images) && data.images.length
           ? `<img class="property-card__image" src="${data.images[0].url}" alt="Property image" />`
-          : `<div class="property-card__image property-card__image--placeholder">No Image</div>`;
+          : `<div class="property-card__image property-card__image--placeholder" aria-label="No Image Available">No Image</div>`;
 
       card.innerHTML = `
         ${thumbnail}
-
         <div class="property-card__content">
           <h3 class="property-card__title">${data.title || "Untitled Property"}</h3>
-
           <p class="property-card__location">
             ${data.locality || ""}${data.location ? ", " + data.location : ""}
           </p>
-
           <p class="property-card__price">
             ${data.price || "Price on request"}
           </p>
-
           <a class="btn btn--primary" href="property.html?id=${doc.id}">
             View Details
           </a>
@@ -58,8 +54,8 @@ async function renderFeaturedProperties() {
 
       grid.appendChild(card);
     });
-  } catch (error) {
-    console.error("Error rendering featured properties:", error);
+  } catch {
+    // silent by design
   }
 }
 
