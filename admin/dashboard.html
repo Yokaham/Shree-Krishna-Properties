@@ -146,6 +146,13 @@
 
 							<div class="admin-form__actions">
 								<button class="admin-btn admin-btn--primary" type="submit">Save Property</button>
+								<p
+								id="admin-form-message"
+								class="admin-form__message"
+								role="status"
+								aria-live="polite"
+								></p>
+
 							</div>
 						</form>
 					</section>
@@ -170,11 +177,13 @@
 									<!-- Rows injected by ../js/admin-dashboard.js -->
 								</tbody>
 							</table>
+							<p id="no-properties-message" class="admin-muted" style="display: none;" > No properties added yet. </p>
 						</div>
 					</section>
 				</div>
 			</div>
 		</main>
+		<script type="module" src="../js/admin-guard.js"></script>
 		<script type="module" src="../js/admin-dashboard.js"></script>
 	</body>
 </html>

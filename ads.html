@@ -44,7 +44,7 @@
 				<div class="container">
 					<header class="section-header">
 						<h1 id="page-title" class="section-title">Property Listings</h1>
-						<p class="section-subtitle">Explore available properties. Filters are placeholders for now.</p>
+						<p class="section-subtitle">Explore available properties. Use the filters below to narrow down your search.</p>
 					</header>
 
 					<section class="filters" aria-labelledby="filters-title">
@@ -65,13 +65,48 @@
 									<label class="filters__label" for="filter-type">Property Type</label>
 									<select class="filters__select" id="filter-type" name="type">
 										<option value="" selected>All types</option>
-										<option value="apartment">Apartment</option>
-										<option value="house">House</option>
+										<option value="flat">Flat</option>
+										<option value="kothi">Kothi</option>
 										<option value="plot">Plot</option>
 										<option value="commercial">Commercial</option>
 									</select>
 								</div>
 							</div>
+							
+							<fieldset class="filters__fieldset">
+								<legend class="filters__label">Tags</legend>
+								<label>
+									<input type="checkbox" name="tags" value="b_road" /> B-Road 
+								</label>
+								
+								<label>
+										<input type="checkbox" name="tags" value="gated" /> Gated Society 
+								</label> 
+								
+								<label>
+									<input type="checkbox" name="tags" value="loan_available" /> Loan Available 
+								</label>
+											
+								<label>
+									<input type="checkbox" name="tags" value="newly_built" /> Newly Built 
+								</label>
+												
+								<label>
+									<input type="checkbox" name="tags" value="corner" /> Corner Property 
+								</label>
+							</fieldset>
+
+							<div class="filters__field">
+								<label class="filters__label" for="filter-search"> Search </label>
+								<input 
+								type="text"
+								id="filter-search"
+								name="search"
+								class="filters__input"
+								placeholder="Search by title, locality, or city"
+								/>
+							</div>
+
 
 							<div class="filters__actions">
 								<button class="btn btn--accent" type="submit">Apply Filters</button>
@@ -84,6 +119,12 @@
 						<div class="property-grid" role="list" id="ads-grid">
 							<!-- Property cards will be injected here by ads.js -->
 						</div>
+						<div class="listings__actions">
+							<button id="load-more-btn" class="btn btn--secondary"> 
+								Load More
+							</button>
+						</div>
+			
 					</section>
 				</div>
 			</section>

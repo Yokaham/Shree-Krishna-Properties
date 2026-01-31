@@ -17,6 +17,7 @@
 
 <main class="admin-main">
   <div class="admin-container">
+    <p id="edit-error-message" class="admin-form__message" role="alert" style="display: none;" > Unable to load property details. </p>
 
     <!-- CURRENT PROPERTY DETAILS -->
     <section class="admin-section">
@@ -36,6 +37,13 @@
         <ul id="current-tags" class="admin-tag-list"></ul>
       </div>
     </section>
+
+    <section class="admin-section">
+      <h2 class="admin-section__title">Existing Images</h2>
+      <div id="existing-images" class="admin-image-grid">
+        <!-- images injected by JS -->
+        </div>
+      </section>
 
     <!-- UPDATE FORM -->
     <section class="admin-section">
@@ -91,7 +99,7 @@
             Update Property
           </button>
           <a href="dashboard.html" class="admin-btn admin-btn--secondary">
-            Cancel
+            Go Back
           </a>
         </div>
 
@@ -100,7 +108,7 @@
 
   </div>
 </main>
-
+<script type="module" src="../js/admin-guard.js"></script>
 <script type="module" src="../js/admin-edit.js"></script>
 </body>
 </html>

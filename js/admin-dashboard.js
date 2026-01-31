@@ -6,14 +6,62 @@
 
 import { auth, db, storage } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { LOCATIONS, PROPERTY_TYPES, TAGS } from "./constants.js";
+import "./admin-guard.js";
 
 
-onAuthStateChanged(auth, (user) => {
-	if (!user) {
-		// Redirect to admin/login.html
-		window.location.href = "./login.html";
-	}
-});
+const tagContainer = document.querySelector(".admin-checklist");
+
+
+function renderTagCheckboxes(container) {
+  container.innerHTML = "";
+
+  TAGS.forEach(tag => {
+    const label = document.createElement("label");
+    label.className = "admin-checklist__item";
+
+    label.innerHTML = `
+      <input
+        class="admin-checklist__input"
+        type="checkbox"
+        name="tags"
+        value="${tag.value}"
+      />
+      <span class="admin-checklist__label">${tag.label}</span>
+    `;
+
+    container.appendChild(label);
+  });
+}
+
+function renderSelectOptions(selectEl, options) {
+  if (!selectEl) return;
+
+  selectEl.innerHTML = `<option value="">Select</option>`;
+
+  options.forEach(opt => {
+    const option = document.createElement("option");
+    option.value = opt.value;
+    option.textContent = opt.label;
+    selectEl.appendChild(option);
+  });
+}
+
+
+if (tagContainer) {
+  renderTagCheckboxes(tagContainer);
+}
+
+renderSelectOptions(
+  document.getElementById("property-location"),
+  LOCATIONS
+);
+
+renderSelectOptions(
+  document.getElementById("property-type"),
+  PROPERTY_TYPES
+);
+
 
 const logoutBtn = document.getElementById("logoutBtn");
 
@@ -31,6 +79,13 @@ if (logoutBtn) {
 }
 
 const propertyForm = document.querySelector(".admin-form");
+
+const submitBtn = propertyForm
+  ? propertyForm.querySelector('button[type="submit"]')
+  : null;
+
+const formMessage = document.getElementById("admin-form-message");
+
 
 // --- Firestore: add one property (text-only test) ---
 
@@ -53,6 +108,15 @@ import {
 if (propertyForm) {
   propertyForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (formMessage) {
+    formMessage.textContent = "";
+  }
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Saving...";
+  }
 
   try {
     const formData = new FormData(propertyForm);
@@ -106,12 +170,28 @@ if (imageFiles && imageFiles.length > 0) {
   });
 }
 // ---- MULTI IMAGE UPLOAD END ----
-alert("Property saved successfully");
+if (formMessage) {
+  formMessage.textContent = "Property saved successfully.";
+}
 propertyForm.reset();
+fetchPropertiesForAdmin();
+
+
+if (submitBtn) {
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Save Property";
+}
+
 
   } catch (error) {
     console.error("Error saving property:", error);
-    alert("Failed to save property. Check console.");
+    if (formMessage) {
+      formMessage.textContent = "Error saving property. Please try again.";
+    }
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Save Property";
+    }
   }
 });
 }
@@ -125,6 +205,12 @@ async function fetchPropertiesForAdmin() {
     if (!tableBody) return;
 
     tableBody.innerHTML = "";
+
+    const emptyMessage = document.getElementById("no-properties-message");
+    if (emptyMessage) {
+      emptyMessage.style.display = "none";
+    }
+
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
@@ -151,6 +237,9 @@ async function fetchPropertiesForAdmin() {
 
       tableBody.appendChild(row);
     });
+    if (querySnapshot.empty && emptyMessage) {
+      emptyMessage.style.display = "block";
+    }
   } catch (error) {
     console.error("Error fetching properties:", error);
   }
@@ -166,9 +255,15 @@ document.addEventListener("click", async (event) => {
 
   const propertyId = deleteBtn.getAttribute("data-id");
   if (!propertyId) return;
-
-  const confirmDelete = confirm("Are you sure you want to delete this property?");
+  
+  const row = deleteBtn.closest("tr");
+  const titleCell = row ? row.querySelector("td") : null;
+  const propertyTitle = titleCell ? titleCell.textContent.trim() : "this property";
+  
+  const confirmDelete = confirm( `Are you sure you want to delete "${propertyTitle}"?`);
+  
   if (!confirmDelete) return;
+
 
   try {
     await deleteDoc(doc(db, "properties", propertyId));

@@ -1,18 +1,36 @@
 import { db } from "./firebase.js";
 import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { arrayRemove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { ref, deleteObject } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+import { storage } from "./firebase.js";
+import { TAGS } from "./constants.js";
+import "./admin-guard.js";
 
-// Fixed list of available tags
-const AVAILABLE_TAGS = [
-  "b_road",
-  "gated",
-  "newly_built",
-  "loan_available",
-  "possession_ready",
-  "north_facing",
-  "park_facing",
-  "corner",
-];
 
+function renderEditableTags(container, selectedTags = []) {
+  container.innerHTML = "";
+
+  TAGS.forEach(tag => {
+    const label = document.createElement("label");
+    label.className = "admin-tag-option";
+
+    const checked = selectedTags.includes(tag.value);
+
+    label.innerHTML = `
+      <input
+        type="checkbox"
+        name="tags"
+        value="${tag.value}"
+        ${checked ? "checked" : ""}
+      />
+      ${tag.label}
+    `;
+
+    container.appendChild(label);
+  });
+}
+
+const errorMessage = document.getElementById("edit-error-message");
   
 
 // Get property ID from URL
@@ -20,10 +38,42 @@ const params = new URLSearchParams(window.location.search);
 const propertyId = params.get("id");
 
 if (!propertyId) {
-  console.error("No property ID found in URL");
+  if (errorMessage) {
+    errorMessage.textContent = "Invalid property link.";
+    errorMessage.style.display = "block";
+  }
 } else {
   loadPropertyForEdit(propertyId);
 }
+
+document.addEventListener("click", async (event) => {
+  const btn = event.target.closest("[data-image-index]");
+  if (!btn) return;
+
+  const index = Number(btn.getAttribute("data-image-index"));
+  if (Number.isNaN(index)) return;
+
+  const confirmDelete = confirm("Remove this image?");
+  if (!confirmDelete) return;
+
+  try {
+    const docRef = doc(db, "properties", propertyId);
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) return;
+
+    const data = snap.data();
+    const updatedImages = [...(data.images || [])];
+    updatedImages.splice(index, 1);
+
+    await updateDoc(docRef, { images: updatedImages });
+
+    loadPropertyForEdit(propertyId); // refresh UI
+  } catch (error) {
+    console.error("Failed to remove image:", error);
+    alert("Failed to remove image.");
+  }
+});
+
 
 
 
@@ -33,13 +83,53 @@ async function loadPropertyForEdit(id) {
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
-      console.error("Property not found");
+      if (errorMessage) {
+        errorMessage.textContent = "Property not found or may have been deleted.";
+        errorMessage.style.display = "block";
+      }
       return;
     }
 
+
     const data = docSnap.data();
 
-const existingTags = Array.isArray(data.tags) ? data.tags : [];
+    const editTagsContainer = document.getElementById("edit-tags");
+    if (editTagsContainer) {
+      renderEditableTags(editTagsContainer, data.tags || []);
+    }
+
+    // ---------- EXISTING IMAGES ----------
+    
+    const imagesContainer = document.getElementById("edit-images");
+    if (imagesContainer) {
+      imagesContainer.innerHTML = "";
+      
+      if (Array.isArray(data.images) && data.images.length) {
+        data.images.forEach((img, index) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "admin-image-item";
+          
+          wrapper.innerHTML = `
+            <img src="${img.url}" alt="Property image ${index + 1}" />
+            <button
+              type="button"
+              class="admin-btn admin-btn--danger admin-btn--small"
+              data-image-index="${index}"
+            >
+              Remove
+            </button>
+          `;
+          
+          imagesContainer.appendChild(wrapper);
+        });
+      } else {
+        imagesContainer.innerHTML = "<p class='admin-muted'>No images uploaded.</p>";
+      }
+    }
+
+
+    
+    const existingTags = Array.isArray(data.tags) ? data.tags : [];
 
 
     // Populate current property details
@@ -69,30 +159,6 @@ const existingTags = Array.isArray(data.tags) ? data.tags : [];
       }
       
     }
-    // Populate editable tag checkboxes
-const editTagsContainer = document.getElementById("edit-tags");
-
-if (editTagsContainer) {
-  editTagsContainer.innerHTML = "";
-
-  AVAILABLE_TAGS.forEach((tag) => {
-    const label = document.createElement("label");
-    label.className = "admin-tag-option";
-
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.name = "tags";
-    checkbox.value = tag;
-
-    if (existingTags.includes(tag)) {
-      checkbox.checked = true;
-    }
-
-    label.appendChild(checkbox);
-    label.append(" " + tag.replace(/_/g, " "));
-    editTagsContainer.appendChild(label);
-  });
-}
 
 
   } catch (error) {
@@ -133,18 +199,15 @@ if (editForm) {
     ].map((input) => input.value);
 
     updateData.tags = selectedTags;
-
-// Save updates to Firestore
-try {
-  const docRef = doc(db, "properties", propertyId);
-  await updateDoc(docRef, updateData);
-
-  alert("Property updated successfully");
-  window.location.href = "dashboard.html";
-} catch (error) {
-  console.error("Error updating property:", error);
-  alert("Failed to update property. Check console.");
-}
-
+    try {
+      const docRef = doc(db, "properties", propertyId);
+      await updateDoc(docRef, updateData);
+      alert("Property updated successfully");
+      loadPropertyForEdit(propertyId);
+      editForm.reset();
+    } catch (error) {
+      console.error("Error updating property:", error);
+      alert("Failed to update property. Check console.");
+    }
   });
 }
