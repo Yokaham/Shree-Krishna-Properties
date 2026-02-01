@@ -21,7 +21,7 @@
 					<section class="admin-card" aria-labelledby="add-title">
 						<header class="admin-card__header">
 							<h2 id="add-title" class="admin-card__title">Add New Property</h2>
-							<p class="admin-card__subtitle">Fill details and save (frontend only).</p>
+							<p class="admin-card__subtitle">Fill details and save.</p>
 						</header>
 
 						<form class="admin-form" action="dashboard.html" method="post" enctype="multipart/form-data">
@@ -39,10 +39,7 @@
 								<div class="form-field">
 									<label class="form-field__label" for="property-location">Location</label>
 									<select class="form-field__select" id="property-location" name="location" required>
-										<option value="" selected>Select location</option>
-										<option value="chandigarh">Chandigarh</option>
-										<option value="mohali">Mohali</option>
-										<option value="panchkula">Panchkula</option>
+											<!-- Options injected by ../js/admin-dashboard.js -->
 									</select>
 								</div>
 								<div class="form-field">
@@ -53,11 +50,7 @@
 								<div class="form-field">
 									<label class="form-field__label" for="property-type">Property Type</label>
 									<select class="form-field__select" id="property-type" name="type" required>
-										<option value="" selected>Select type</option>
-										<option value="plot">Plot</option>
-										<option value="kothi">Kothi</option>
-										<option value="flat">Flat</option>
-										<option value="commercial">Commercial</option>
+											<!-- Options injected by ../js/admin-dashboard.js -->
 									</select>
 								</div>
 
@@ -81,38 +74,7 @@
 							<fieldset class="admin-fieldset" aria-labelledby="tags-title">
 								<legend id="tags-title" class="admin-fieldset__legend">Tags</legend>
 								<div class="admin-checklist" role="list">
-									<label class="admin-checklist__item" role="listitem">
-										<input class="admin-checklist__input" type="checkbox" name="tags" value="corner" />
-										<span class="admin-checklist__label">Corner Property</span>
-									</label>
-									<label class="admin-checklist__item" role="listitem">
-										<input class="admin-checklist__input" type="checkbox" name="tags" value="park_facing" />
-										<span class="admin-checklist__label">Park Facing</span>
-									</label>
-									<label class="admin-checklist__item" role="listitem">
-										<input class="admin-checklist__input" type="checkbox" name="tags" value="north_facing" />
-										<span class="admin-checklist__label">North Facing</span>
-									</label>
-									<label class="admin-checklist__item" role="listitem">
-										<input class="admin-checklist__input" type="checkbox" name="tags" value="b_road" />
-										<span class="admin-checklist__label">B-Road</span>
-									</label>
-									<label class="admin-checklist__item" role="listitem">
-										<input class="admin-checklist__input" type="checkbox" name="tags" value="gated" />
-										<span class="admin-checklist__label">Gated Society</span>
-									</label>
-									<label class="admin-checklist__item" role="listitem">
-										<input class="admin-checklist__input" type="checkbox" name="tags" value="newly_built" />
-										<span class="admin-checklist__label">Newly Built</span>
-									</label>
-									<label class="admin-checklist__item" role="listitem">
-										<input class="admin-checklist__input" type="checkbox" name="tags" value="loan_available" />
-										<span class="admin-checklist__label">Loan Available</span>
-									</label>
-									<label class="admin-checklist__item" role="listitem">
-										<input class="admin-checklist__input" type="checkbox" name="tags" value="possession_ready" />
-										<span class="admin-checklist__label">Possession Ready</span>
-									</label>
+									<!-- Tag checkboxes injected by ../js/admin-dashboard.js -->
 								</div>
 							</fieldset>
 

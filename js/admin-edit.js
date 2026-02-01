@@ -1,11 +1,18 @@
 import { db } from "./firebase.js";
 import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-import { arrayRemove } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-import { ref, deleteObject } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
-import { storage } from "./firebase.js";
 import { TAGS } from "./constants.js";
 import "./admin-guard.js";
 
+// DOM references
+const editForm = document.getElementById("edit-property-form");
+const errorMessage = document.getElementById("edit-error-message");
+
+
+// Utility helper
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value || "—";
+}
 
 function renderEditableTags(container, selectedTags = []) {
   container.innerHTML = "";
@@ -29,53 +36,6 @@ function renderEditableTags(container, selectedTags = []) {
     container.appendChild(label);
   });
 }
-
-const errorMessage = document.getElementById("edit-error-message");
-  
-
-// Get property ID from URL
-const params = new URLSearchParams(window.location.search);
-const propertyId = params.get("id");
-
-if (!propertyId) {
-  if (errorMessage) {
-    errorMessage.textContent = "Invalid property link.";
-    errorMessage.style.display = "block";
-  }
-} else {
-  loadPropertyForEdit(propertyId);
-}
-
-document.addEventListener("click", async (event) => {
-  const btn = event.target.closest("[data-image-index]");
-  if (!btn) return;
-
-  const index = Number(btn.getAttribute("data-image-index"));
-  if (Number.isNaN(index)) return;
-
-  const confirmDelete = confirm("Remove this image?");
-  if (!confirmDelete) return;
-
-  try {
-    const docRef = doc(db, "properties", propertyId);
-    const snap = await getDoc(docRef);
-    if (!snap.exists()) return;
-
-    const data = snap.data();
-    const updatedImages = [...(data.images || [])];
-    updatedImages.splice(index, 1);
-
-    await updateDoc(docRef, { images: updatedImages });
-
-    loadPropertyForEdit(propertyId); // refresh UI
-  } catch (error) {
-    console.error("Failed to remove image:", error);
-    alert("Failed to remove image.");
-  }
-});
-
-
-
 
 async function loadPropertyForEdit(id) {
   try {
@@ -166,15 +126,49 @@ async function loadPropertyForEdit(id) {
   }
 }
 
-// Utility helper
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = value || "—";
+// Get property ID from URL
+const params = new URLSearchParams(window.location.search);
+const propertyId = params.get("id");
+
+if (!propertyId) {
+  if (errorMessage) {
+    errorMessage.textContent = "Invalid property link.";
+    errorMessage.style.display = "block";
+  }
+} else {
+  loadPropertyForEdit(propertyId);
 }
+
+document.addEventListener("click", async (event) => {
+  const btn = event.target.closest("[data-image-index]");
+  if (!btn) return;
+
+  const index = Number(btn.getAttribute("data-image-index"));
+  if (Number.isNaN(index)) return;
+
+  const confirmDelete = confirm("Remove this image?");
+  if (!confirmDelete) return;
+
+  try {
+    const docRef = doc(db, "properties", propertyId);
+    const snap = await getDoc(docRef);
+    if (!snap.exists()) return;
+
+    const data = snap.data();
+    const updatedImages = [...(data.images || [])];
+    updatedImages.splice(index, 1);
+
+    await updateDoc(docRef, { images: updatedImages });
+
+    loadPropertyForEdit(propertyId); // refresh UI
+  } catch (error) {
+    console.error("Failed to remove image:", error);
+    alert("Failed to remove image.");
+  }
+});
 
 
 // Handle update form submission (build payload only)
-const editForm = document.getElementById("edit-property-form");
 
 if (editForm) {
   editForm.addEventListener("submit", async (event) => {

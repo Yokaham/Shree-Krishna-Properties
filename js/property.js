@@ -7,8 +7,9 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-
 const params = new URLSearchParams(window.location.search);
 const propertyId = params.get("id");
 
-if (!propertyId) return;
-renderProperty(propertyId);
+if (propertyId) {
+  renderProperty(propertyId);
+}
 
 async function renderProperty(id) {
   try {
@@ -19,45 +20,30 @@ async function renderProperty(id) {
 
     const data = docSnap.data();
 
-    /* ---------------- BASIC INFO ---------------- */
-
+    // DOM references
     const titleEl = document.getElementById("property-title");
-    if (titleEl) titleEl.textContent = data.title || "Property";
-
     const priceEl = document.querySelector(".property-detail__price");
-    if (priceEl) priceEl.textContent = data.price || "Price on request";
-
     const subtitleEl = document.querySelector(".section-subtitle");
+    const galleryContainer = document.querySelector(".property-detail__gallery");
+    const detailsTable = document.querySelector(".details-table tbody");
+    const descEl = document.querySelector(".property-detail__description-text");
+
+    const hasTags = Array.isArray(data.tags) && data.tags.length;
+    const hasImages = Array.isArray(data.images) && data.images.length;
+
+    /* ---------------- BASIC INFO ---------------- */
+    if (titleEl) titleEl.textContent = data.title || "Property";
+    if (priceEl) priceEl.textContent = data.price || "Price on request";
     if (subtitleEl) {
       subtitleEl.textContent = `${data.locality || ""}${data.location ? ", " + data.location : ""}`;
     }
 
-    /* ---------------- TAGS ---------------- */
-
-    if (Array.isArray(data.tags) && data.tags.length) {
-      const tagsContainer = document.createElement("ul");
-      tagsContainer.className = "property-tags";
-
-      data.tags.forEach((tag) => {
-        const li = document.createElement("li");
-        li.className = "property-tag";
-        li.textContent = tag.replace(/_/g, " ");
-        tagsContainer.appendChild(li);
-      });
-
-      if (subtitleEl && subtitleEl.parentElement) {
-        subtitleEl.parentElement.appendChild(tagsContainer);
-      }
-    }
-
     /* ---------------- IMAGE GALLERY ---------------- */
-
-    const galleryContainer = document.querySelector(".property-detail__gallery");
     if (!galleryContainer) return;
 
     galleryContainer.innerHTML = "";
 
-    if (Array.isArray(data.images) && data.images.length) {
+    if (hasImages) {
       data.images.forEach((img, index) => {
         const card = document.createElement("div");
         card.className = "property-card";
@@ -92,8 +78,6 @@ async function renderProperty(id) {
     }
 
     /* ---------------- DETAILS TABLE ---------------- */
-
-    const detailsTable = document.querySelector(".details-table tbody");
     if (detailsTable) {
       detailsTable.innerHTML = `
         <tr><th>Location</th><td>${data.location || "-"}</td></tr>
@@ -102,10 +86,23 @@ async function renderProperty(id) {
         <tr><th>Area</th><td>${data.area || "-"}</td></tr>
       `;
     }
+    /* ---------------- TAGS ---------------- */
+    const tagsWrapper = document.querySelector(".property-card__tags");
+    if (tagsWrapper) {
+      tagsWrapper.innerHTML = "";
+      if (hasTags) {
+        data.tags.forEach((tag) => {
+          const span = document.createElement("span");
+          span.className = "property-tag";
+          span.textContent = tag.replace(/_/g, " ");
+          tagsWrapper.appendChild(span);
+        });
+      } else {
+        tagsWrapper.textContent = "No tags available";
+      }
+    }
 
     /* ---------------- DESCRIPTION ---------------- */
-
-    const descEl = document.querySelector(".property-detail__description-text");
     if (descEl) descEl.textContent = data.description || "";
 
   } catch {

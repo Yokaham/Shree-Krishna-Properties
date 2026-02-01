@@ -1,5 +1,3 @@
-// --- Home Page: Render Featured Properties ---
-
 import { db } from "./firebase.js";
 import {
   collection,
@@ -10,33 +8,23 @@ import {
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
 
-async function renderFeaturedProperties() {
-  const grid = document.getElementById("home-featured-grid");
-  if (!grid) return;
+const grid = document.getElementById("home-featured-grid");
 
-  try {
-    const q = query(
-      collection(db, "properties"),
-      orderBy("createdAt", "desc"),
-      limit(3)
-    );
+function renderThumbnailHtml(images) {
+  return Array.isArray(images) && images.length
+    ? `<img class="property-card__image" src="${images[0].url}" alt="Property image" />`
+    : `<div class="property-card__image property-card__image--placeholder" aria-label="No Image Available">No Image</div>`;
+}
 
-    const querySnapshot = await getDocs(q);
+function renderPropertyCard(doc) {
+  const data = doc.data();
 
-    grid.innerHTML = "";
+  const card = document.createElement("article");
+  card.className = "property-card";
 
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
+  const thumbnail = renderThumbnailHtml(data.images);
 
-      const card = document.createElement("article");
-      card.className = "property-card";
-
-      const thumbnail =
-        Array.isArray(data.images) && data.images.length
-          ? `<img class="property-card__image" src="${data.images[0].url}" alt="Property image" />`
-          : `<div class="property-card__image property-card__image--placeholder" aria-label="No Image Available">No Image</div>`;
-
-      card.innerHTML = `
+  card.innerHTML = `
         ${thumbnail}
         <div class="property-card__content">
           <h3 class="property-card__title">${data.title || "Untitled Property"}</h3>
@@ -52,7 +40,26 @@ async function renderFeaturedProperties() {
         </div>
       `;
 
-      grid.appendChild(card);
+  return card;
+}
+
+
+async function renderFeaturedProperties() {
+  if (!grid) return;
+
+  try {
+    const q = query(
+      collection(db, "properties"),
+      orderBy("createdAt", "desc"),
+      limit(3)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    grid.innerHTML = "";
+
+    querySnapshot.forEach((doc) => {
+      grid.appendChild(renderPropertyCard(doc));
     });
   } catch {
     // silent by design
